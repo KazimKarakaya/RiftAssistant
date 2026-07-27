@@ -1,0 +1,21 @@
+.vs/
+bin/
+obj/
+
+**/bin/
+**/obj/
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+TestResults/
+
+# Publish çıktıları
+publish/
+Release/
+
+# Yerel loglar
+debug.log
+debug.old.log
