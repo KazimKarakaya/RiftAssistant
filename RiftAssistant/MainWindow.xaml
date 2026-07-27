@@ -2,51 +2,63 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="RiftAssistant"
-        Width="1220"
-        Height="740"
-        MinWidth="1080"
-        MinHeight="670"
+        Width="1180"
+        Height="760"
+        MinWidth="1050"
+        MinHeight="680"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResize"
         Loaded="Window_Loaded"
         Topmost="True"
-        Background="#0B0F14"
+        Background="#080D13"
         FontFamily="Segoe UI">
 
     <Window.Resources>
-        <SolidColorBrush x:Key="PageBrush" Color="#0B0F14"/>
-        <SolidColorBrush x:Key="CardBrush" Color="#141A22"/>
-        <SolidColorBrush x:Key="CardAltBrush" Color="#19212B"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="#26313E"/>
+        <SolidColorBrush x:Key="PageBrush" Color="#080D13"/>
+        <SolidColorBrush x:Key="SidebarBrush" Color="#0C121A"/>
+        <SolidColorBrush x:Key="CardBrush" Color="#101821"/>
+        <SolidColorBrush x:Key="CardAltBrush" Color="#141E29"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="#223040"/>
         <SolidColorBrush x:Key="PrimaryBrush" Color="#C89B3C"/>
-        <SolidColorBrush x:Key="TextBrush" Color="#F3F4F6"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#8B98A8"/>
-        <SolidColorBrush x:Key="InputBrush" Color="#0F141B"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="#55D66B"/>
-        <SolidColorBrush x:Key="InfoBrush" Color="#5BA7FF"/>
+        <SolidColorBrush x:Key="PrimaryDarkBrush" Color="#2A2215"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#F2F4F7"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#8D99A8"/>
+        <SolidColorBrush x:Key="InputBrush" Color="#0C1219"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#58D66B"/>
+        <SolidColorBrush x:Key="InfoBrush" Color="#4E9BFF"/>
 
         <Style x:Key="CardStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource CardBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="14"/>
-            <Setter Property="Padding" Value="20"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="18"/>
         </Style>
 
         <Style x:Key="SubCardStyle" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource CardAltBrush}"/>
+            <Setter Property="BorderBrush" Value="#1E2B39"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Padding" Value="14"/>
         </Style>
 
         <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}"/>
-            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="PageHeadingStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="FontSize" Value="24"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
 
         <Style x:Key="LabelStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
@@ -58,14 +70,14 @@
 
         <Style x:Key="FeatureCheckBoxStyle" TargetType="CheckBox">
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
         <Style x:Key="InputComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Height" Value="34"/>
+            <Setter Property="Height" Value="38"/>
             <Setter Property="Background" Value="#F3F4F6"/>
             <Setter Property="Foreground" Value="#111827"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
@@ -79,733 +91,1359 @@
         </Style>
 
         <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="34"/>
+            <Setter Property="Height" Value="36"/>
             <Setter Property="Padding" Value="14,0"/>
             <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
-            <Setter Property="Background" Value="#202935"/>
+            <Setter Property="Background" Value="#17222E"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
-</Window.Resources>
 
-    <Grid Background="{StaticResource PageBrush}"
-          Margin="22">
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Margin" Value="10,3"/>
+            <Setter Property="Padding" Value="13,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="#B6C0CC"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        <Style x:Key="WindowButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Foreground" Value="#B7C0CB"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
 
-        <!-- HEADER -->
-        <Grid Grid.Row="0"
-              Margin="0,0,0,16">
+    <Border Background="{StaticResource PageBrush}"
+            BorderBrush="#1A2633"
+            BorderThickness="1"
+            CornerRadius="10">
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="46"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <StackPanel>
-                <TextBlock Text="RiftAssistant"
-                           Foreground="{StaticResource TextBrush}"
-                           FontSize="30"
-                           FontWeight="Bold"/>
-
-                <TextBlock Text="League of Legends Client Automation"
-                           Foreground="{StaticResource MutedBrush}"
-                           FontSize="13"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
-
-            <Border x:Name="LcuStatusBadge"
-                    Grid.Column="1"
-                    Background="#222831"
-                    BorderBrush="#3A4654"
-                    BorderThickness="1"
-                    CornerRadius="20"
-                    Padding="14,7"
-                    VerticalAlignment="Center">
-
-                <StackPanel Orientation="Horizontal">
-                    <Ellipse x:Name="LcuStatusDot"
-                             Width="8"
-                             Height="8"
-                             Fill="#8B98A8"
-                             Margin="0,0,8,0"
-                             VerticalAlignment="Center"/>
-
-                    <TextBlock x:Name="LcuStatusBadgeText"
-                               Text="Bekleniyor"
-                               Foreground="#C7D0DA"
-                               FontWeight="SemiBold"/>
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <!-- STATUS -->
-        <Border Grid.Row="1"
-                Style="{StaticResource CardStyle}"
-                Background="{StaticResource CardAltBrush}"
-                Margin="0,0,0,14">
-
-            <Grid>
+            <!-- CUSTOM TITLE BAR -->
+            <Grid Grid.Row="0"
+                  Background="#0A1017"
+                  MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="14,0,0,0">
+                    <Border Width="30"
+        Height="30"
+        CornerRadius="7"
+        ClipToBounds="True"
+        Background="#10151D">
+
+                        <Image Source="Assets/RiftAssistant_AppIcon.png"
+       Width="30"
+       Height="30"
+       Stretch="Uniform"/>
+                    </Border>
+
+                    <TextBlock Text="RiftAssistant"
+                               Foreground="{StaticResource TextBrush}"
+                               FontWeight="SemiBold"
+                               FontSize="13"
+                               VerticalAlignment="Center"
+                               Margin="9,0,0,0"/>
+                </StackPanel>
+
+                <TextBlock x:Name="PageTitleText"
+                           Grid.Column="1"
+                           Text="Dashboard"
+                           Foreground="#7E8B9A"
+                           FontSize="12"
+                           VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal">
+                    <Button Content="—"
+                            Style="{StaticResource WindowButtonStyle}"
+                            Click="MinimizeButton_Click"/>
+                    <Button Content="□"
+                            Style="{StaticResource WindowButtonStyle}"
+                            Click="MaximizeButton_Click"/>
+                    <Button Content="✕"
+                            Style="{StaticResource WindowButtonStyle}"
+                            Click="CloseButton_Click"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Width="40"
-                        Height="40"
-                        CornerRadius="10"
-                        Background="#2B2417">
+                <!-- SIDEBAR -->
+                <Border Grid.Column="0"
+                        Background="{StaticResource SidebarBrush}"
+                        BorderBrush="#172330"
+                        BorderThickness="0,1,1,0">
 
-                    <TextBlock Text="●"
-                               Foreground="{StaticResource PrimaryBrush}"
-                               FontSize="20"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Margin="0,10,0,0">
+                            <Button x:Name="DashboardNavButton"
+                                    Tag="Dashboard"
+                                    Content="⌂   Dashboard"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"
+                                    Background="#2A2417"
+                                    BorderBrush="#624B20"
+                                    Foreground="#E4B957"/>
+
+                            <Button x:Name="AutoAcceptNavButton"
+                                    Tag="AutoAccept"
+                                    Content="✓   Auto Accept"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"/>
+
+                            <Button x:Name="AutoBanNavButton"
+                                    Tag="AutoBan"
+                                    Content="⊘   Auto Ban"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"/>
+
+                            <Button x:Name="AutoPickNavButton"
+                                    Tag="AutoPick"
+                                    Content="◇   Auto Pick"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"/>
+
+                            <Button x:Name="ProfilesNavButton"
+                                    Tag="Profiles"
+                                    Content="◫   Profiller"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"
+                                    Margin="10,15,10,3"/>
+
+                            <Button x:Name="SettingsNavButton"
+                                    Tag="Settings"
+                                    Content="⚙   Ayarlar"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"/>
+
+                            <Button x:Name="UpdatesNavButton"
+                                    Tag="Updates"
+                                    Content="↻   Güncellemeler"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"/>
+
+                            <Button x:Name="AboutNavButton"
+                                    Tag="About"
+                                    Content="ⓘ   Hakkında"
+                                    Click="NavigationButton_Click"
+                                    Style="{StaticResource NavButtonStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1"
+                                    Margin="16,0,16,15">
+                            <Separator Background="#1D2A37"
+                                       Margin="0,0,0,12"/>
+
+                            <TextBlock x:Name="VersionSignatureText"
+                                       Text="Developed by Kazım Karakaya with AI • v0.9.0-beta.3"
+                                       Foreground="#5E6B79"
+                                       FontSize="9"
+                                       TextWrapping="Wrap"/>
+
+                            <TextBlock Text="RiftAssistant"
+                                       Foreground="#354352"
+                                       FontSize="9"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
                 </Border>
 
-                <StackPanel Grid.Column="1"
-                            Margin="14,0,0,0">
+                <!-- MAIN CONTENT -->
+                <Grid Grid.Column="1"
+                      Margin="18">
 
-                    <TextBlock Text="İstemci durumu"
-                               Foreground="{StaticResource MutedBrush}"
-                               FontSize="11"/>
+                    <!-- DASHBOARD -->
+                    <Grid x:Name="DashboardPage">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="StatusText"
-                               Text="League Client bekleniyor..."
-                               Foreground="{StaticResource TextBrush}"
-                               FontWeight="SemiBold"
-                               FontSize="14"
-                               Margin="0,4,0,0"
-                               TextWrapping="Wrap"/>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- 3-COLUMN DASHBOARD / NO SCROLL -->
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.78*"/>
-                <ColumnDefinition Width="14"/>
-                <ColumnDefinition Width="1.15*"/>
-                <ColumnDefinition Width="14"/>
-                <ColumnDefinition Width="1.15*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- AUTO ACCEPT -->
-            <Border Grid.Column="0"
-                    Style="{StaticResource CardStyle}">
-
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel>
-                            <TextBlock Text="AUTO ACCEPT"
-                                       Style="{StaticResource SectionTitleStyle}"/>
-
-                            <TextBlock Text="Otomatik kabul"
-                                       Foreground="{StaticResource TextBrush}"
-                                       FontSize="18"
-                                       FontWeight="SemiBold"
-                                       Margin="0,5,0,0"/>
-                        </StackPanel>
-
-                        <CheckBox x:Name="AutoAcceptCheckBox"
-                                  Grid.Column="1"
-                                  Content="Aktif"
-                                  IsChecked="True"
-                                  Checked="AutoAcceptCheckBox_Checked"
-                                  Unchecked="AutoAcceptCheckBox_Unchecked"
-                                  Style="{StaticResource FeatureCheckBoxStyle}"/>
-                    </Grid>
-
-                    <Border Grid.Row="1"
-                            Style="{StaticResource SubCardStyle}"
-                            Margin="0,18,0,0">
-
-                        <StackPanel>
-                            <TextBlock Text="Kabul gecikmesi"
-                                       Style="{StaticResource LabelStyle}"/>
-
-                            <TextBlock Text="Ready Check başladıktan sonra beklenecek süre."
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Dashboard"
+                                       Style="{StaticResource PageHeadingStyle}"/>
+                            <TextBlock Text="LCU bağlantısı ve otomasyonların genel durumu"
                                        Style="{StaticResource HintStyle}"
-                                       Margin="0,4,0,10"/>
-
-                            <ComboBox x:Name="AutoAcceptDelayComboBox"
-                                      SelectedIndex="5"
-                                      SelectionChanged="AutoAcceptDelayComboBox_SelectionChanged"
-                                      Style="{StaticResource InputComboBoxStyle}">
-                                <ComboBoxItem Content="0"/>
-                                <ComboBoxItem Content="1"/>
-                                <ComboBoxItem Content="2"/>
-                                <ComboBoxItem Content="3"/>
-                                <ComboBoxItem Content="4"/>
-                                <ComboBoxItem Content="5"/>
-                                <ComboBoxItem Content="6"/>
-                                <ComboBoxItem Content="7"/>
-                                <ComboBoxItem Content="8"/>
-                                <ComboBoxItem Content="9"/>
-                            </ComboBox>
+                                       Margin="0,4,0,0"/>
                         </StackPanel>
-                    </Border>
 
-                    <StackPanel Grid.Row="2"
-                                Margin="0,14,0,0">
+                        <Border Grid.Row="1"
+                                Style="{StaticResource CardStyle}"
+                                Margin="0,0,0,14">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                        <Border Background="#10161D"
-                                BorderBrush="#253443"
-                                BorderThickness="1"
-                                CornerRadius="9"
-                                Padding="10"
-                                Margin="0,0,0,10">
+                                <StackPanel>
+                                    <TextBlock Text="LCU DURUMU"
+                                               Style="{StaticResource SectionTitleStyle}"/>
 
-                            <TextBlock x:Name="AutoAcceptStatusText"
-                                       Text="Auto Accept hazır."
-                                       Foreground="#B7C0CB"
-                                       FontSize="11"
-                                       TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="StatusText"
+                                               Text="League Client bekleniyor..."
+                                               Foreground="{StaticResource TextBrush}"
+                                               FontSize="15"
+                                               FontWeight="SemiBold"
+                                               Margin="0,7,0,0"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="DashboardRoleProfileText"
+                                               Text="Rol profili: bekleniyor"
+                                               Foreground="#6D7B8B"
+                                               FontSize="10"
+                                               Margin="0,5,0,0"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+
+                                <Border x:Name="LcuStatusBadge"
+                                        Grid.Column="1"
+                                        Background="#222831"
+                                        BorderBrush="#3A4654"
+                                        BorderThickness="1"
+                                        CornerRadius="20"
+                                        Padding="14,7"
+                                        VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse x:Name="LcuStatusDot"
+                                                 Width="8"
+                                                 Height="8"
+                                                 Fill="#8B98A8"
+                                                 Margin="0,0,8,0"
+                                                 VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="LcuStatusBadgeText"
+                                                   Text="Bekleniyor"
+                                                   Foreground="#C7D0DA"
+                                                   FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
                         </Border>
 
-                        <TextBlock Text="Maç bulunduğunda seçtiğin gecikme sonunda otomatik kabul eder."
-                                   Style="{StaticResource HintStyle}"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-            <!-- AUTO BAN -->
-            <Border Grid.Column="2"
-                    Style="{StaticResource CardStyle}">
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource CardStyle}">
+                                <StackPanel HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                    <Border Width="58"
+                                            Height="58"
+                                            CornerRadius="29"
+                                            BorderBrush="#C89B3C"
+                                            BorderThickness="2"
+                                            Background="#19170F">
+                                        <TextBlock Text="✓"
+                                                   FontSize="26"
+                                                   Foreground="#E6B64C"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="AUTO ACCEPT"
+                                               Foreground="{StaticResource TextBrush}"
+                                               FontWeight="Bold"
+                                               Margin="0,15,0,0"/>
+                                    <TextBlock x:Name="DashboardAutoAcceptStateText"
+                                               Text="Aktif"
+                                               Foreground="{StaticResource SuccessBrush}"
+                                               FontWeight="SemiBold"
+                                               Margin="0,5,0,0"/>
+                                    <TextBlock Text="Maç bulunduğunda otomatik kabul eder."
+                                               Style="{StaticResource HintStyle}"
+                                               TextAlignment="Center"
+                                               Margin="8,14,8,0"/>
+                                </StackPanel>
+                            </Border>
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                            <Border Grid.Column="2"
+                                    Style="{StaticResource CardStyle}">
+                                <StackPanel HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                    <Border Width="58"
+                                            Height="58"
+                                            CornerRadius="29"
+                                            BorderBrush="#9B5CFF"
+                                            BorderThickness="2"
+                                            Background="#191329">
+                                        <TextBlock Text="⊘"
+                                                   FontSize="25"
+                                                   Foreground="#B985FF"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="AUTO BAN"
+                                               Foreground="{StaticResource TextBrush}"
+                                               FontWeight="Bold"
+                                               Margin="0,15,0,0"/>
+                                    <TextBlock x:Name="DashboardAutoBanStateText"
+                                               Text="Kapalı"
+                                               Foreground="{StaticResource MutedBrush}"
+                                               FontWeight="SemiBold"
+                                               Margin="0,5,0,0"/>
+                                    <TextBlock Text="1 → 2 → 3 önceliğine göre banlar."
+                                               Style="{StaticResource HintStyle}"
+                                               TextAlignment="Center"
+                                               Margin="8,14,8,0"/>
+                                </StackPanel>
+                            </Border>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                            <Border Grid.Column="4"
+                                    Style="{StaticResource CardStyle}">
+                                <StackPanel HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                    <Border Width="58"
+                                            Height="58"
+                                            CornerRadius="29"
+                                            BorderBrush="#4A82FF"
+                                            BorderThickness="2"
+                                            Background="#111B2B">
+                                        <TextBlock Text="◇"
+                                                   FontSize="26"
+                                                   Foreground="#5EA0FF"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="AUTO PICK"
+                                               Foreground="{StaticResource TextBrush}"
+                                               FontWeight="Bold"
+                                               Margin="0,15,0,0"/>
+                                    <TextBlock x:Name="DashboardAutoPickStateText"
+                                               Text="Kapalı"
+                                               Foreground="{StaticResource MutedBrush}"
+                                               FontWeight="SemiBold"
+                                               Margin="0,5,0,0"/>
+                                    <TextBlock Text="1 → 2 → 3 önceliğine göre pickler."
+                                               Style="{StaticResource HintStyle}"
+                                               TextAlignment="Center"
+                                               Margin="8,14,8,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
 
-                        <StackPanel>
-                            <TextBlock Text="AUTO BAN"
-                                       Style="{StaticResource SectionTitleStyle}"/>
+                    <!-- AUTO ACCEPT PAGE -->
+                    <Grid x:Name="AutoAcceptPage"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                            <TextBlock Text="Otomatik yasaklama"
-                                       Foreground="{StaticResource TextBrush}"
-                                       FontSize="18"
-                                       FontWeight="SemiBold"
-                                       Margin="0,5,0,0"/>
-
-                            <TextBlock Text="Öncelik: 1 → 2 → 3"
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Auto Accept"
+                                       Style="{StaticResource PageHeadingStyle}"/>
+                            <TextBlock Text="Ready Check otomatik kabul ayarları"
                                        Style="{StaticResource HintStyle}"
                                        Margin="0,4,0,0"/>
                         </StackPanel>
 
-                        <CheckBox x:Name="AutoBanCheckBox"
-                                  Grid.Column="1"
-                                  Content="Aktif"
-                                  IsChecked="False"
-                                  Checked="AutoBanCheckBox_Checked"
-                                  Unchecked="AutoBanCheckBox_Unchecked"
-                                  Style="{StaticResource FeatureCheckBoxStyle}"/>
+                        <Border Grid.Row="1"
+                                Style="{StaticResource CardStyle}"
+                                MaxWidth="760"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                            <StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Otomatik kabul"
+                                                   Foreground="{StaticResource TextBrush}"
+                                                   FontSize="18"
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="Maç bulunduğunda seçilen gecikme sonunda kabul eder."
+                                                   Style="{StaticResource HintStyle}"
+                                                   Margin="0,4,20,0"/>
+                                    </StackPanel>
+                                    <CheckBox x:Name="AutoAcceptCheckBox"
+                                              Grid.Column="1"
+                                              Content="Aktif"
+                                              IsChecked="True"
+                                              Checked="AutoAcceptCheckBox_Checked"
+                                              Unchecked="AutoAcceptCheckBox_Unchecked"
+                                              Style="{StaticResource FeatureCheckBoxStyle}"/>
+                                </Grid>
+
+                                <Border Style="{StaticResource SubCardStyle}"
+                                        Margin="0,18,0,0">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="170"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="Kabul gecikmesi"
+                                                       Style="{StaticResource LabelStyle}"/>
+                                            <TextBlock Text="Ready Check başladıktan sonra beklenecek saniye."
+                                                       Style="{StaticResource HintStyle}"
+                                                       Margin="0,4,20,0"/>
+                                        </StackPanel>
+                                        <ComboBox x:Name="AutoAcceptDelayComboBox"
+                                                  Grid.Column="1"
+                                                  SelectedIndex="5"
+                                                  SelectionChanged="AutoAcceptDelayComboBox_SelectionChanged"
+                                                  Style="{StaticResource InputComboBoxStyle}">
+                                            <ComboBoxItem Content="0"/>
+                                            <ComboBoxItem Content="1"/>
+                                            <ComboBoxItem Content="2"/>
+                                            <ComboBoxItem Content="3"/>
+                                            <ComboBoxItem Content="4"/>
+                                            <ComboBoxItem Content="5"/>
+                                            <ComboBoxItem Content="6"/>
+                                            <ComboBoxItem Content="7"/>
+                                            <ComboBoxItem Content="8"/>
+                                            <ComboBoxItem Content="9"/>
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+
+                                <Border Background="#0D141C"
+                                        BorderBrush="#203040"
+                                        BorderThickness="1"
+                                        CornerRadius="9"
+                                        Padding="12"
+                                        Margin="0,14,0,0">
+                                    <TextBlock x:Name="AutoAcceptStatusText"
+                                               Text="Auto Accept hazır."
+                                               Foreground="#B7C0CB"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
                     </Grid>
 
-                    <Border Grid.Row="1"
-                            Style="{StaticResource SubCardStyle}"
-                            Margin="0,18,0,0">
+                    <!-- AUTO BAN PAGE -->
+                    <Grid x:Name="AutoBanPage"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <StackPanel>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="155"/>
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel>
-                                    <TextBlock Text="1. Ban tercihi"
-                                               Style="{StaticResource LabelStyle}"/>
-                                    <TextBlock Text="Birinci öncelik"
-                                               Style="{StaticResource HintStyle}"
-                                               Margin="0,3,10,0"/>
-                                </StackPanel>
-
-                                <Border Grid.Column="1"
-                                        Width="28"
-                                        Height="28"
-                                        CornerRadius="7"
-                                        ClipToBounds="True"
-                                        Background="#202935"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center">
-
-                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=PrimaryBanChampionComboBox}"
-                                           Width="28"
-                                           Height="28"
-                                           Stretch="UniformToFill"/>
-                                </Border>
-
-                                <ComboBox x:Name="PrimaryBanChampionComboBox"
-                                          Height="38"
-                                          Grid.Column="2"
-                                          IsTextSearchEnabled="True"
-                                          DisplayMemberPath="Name"
-                                          SelectedValuePath="Id"
-                                          TextSearch.TextPath="Name"
-                                          SelectionChanged="BanChampionComboBox_SelectionChanged"
-                                          Style="{StaticResource InputComboBoxStyle}"/>
-                            </Grid>
-
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="155"/>
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel>
-                                    <TextBlock Text="2. Ban tercihi"
-                                               Style="{StaticResource LabelStyle}"/>
-                                    <TextBlock Text="İkinci alternatif"
-                                               Style="{StaticResource HintStyle}"
-                                               Margin="0,3,10,0"/>
-                                </StackPanel>
-
-                                <Border Grid.Column="1"
-                                        Width="28"
-                                        Height="28"
-                                        CornerRadius="7"
-                                        ClipToBounds="True"
-                                        Background="#202935"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center">
-
-                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=SecondaryBanChampionComboBox}"
-                                           Width="28"
-                                           Height="28"
-                                           Stretch="UniformToFill"/>
-                                </Border>
-
-                                <ComboBox x:Name="SecondaryBanChampionComboBox"
-                                          Height="38"
-                                          Grid.Column="2"
-                                          IsTextSearchEnabled="True"
-                                          DisplayMemberPath="Name"
-                                          SelectedValuePath="Id"
-                                          TextSearch.TextPath="Name"
-                                          SelectionChanged="BanChampionComboBox_SelectionChanged"
-                                          Style="{StaticResource InputComboBoxStyle}"/>
-                            </Grid>
-
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="155"/>
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel>
-                                    <TextBlock Text="3. Ban tercihi"
-                                               Style="{StaticResource LabelStyle}"/>
-                                    <TextBlock Text="Son alternatif"
-                                               Style="{StaticResource HintStyle}"
-                                               Margin="0,3,10,0"/>
-                                </StackPanel>
-
-                                <Border Grid.Column="1"
-                                        Width="28"
-                                        Height="28"
-                                        CornerRadius="7"
-                                        ClipToBounds="True"
-                                        Background="#202935"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center">
-
-                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=TertiaryBanChampionComboBox}"
-                                           Width="28"
-                                           Height="28"
-                                           Stretch="UniformToFill"/>
-                                </Border>
-
-                                <ComboBox x:Name="TertiaryBanChampionComboBox"
-                                          Height="38"
-                                          Grid.Column="2"
-                                          IsTextSearchEnabled="True"
-                                          DisplayMemberPath="Name"
-                                          SelectedValuePath="Id"
-                                          TextSearch.TextPath="Name"
-                                          SelectionChanged="BanChampionComboBox_SelectionChanged"
-                                          Style="{StaticResource InputComboBoxStyle}"/>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <Grid Grid.Row="2"
-                          Margin="0,14,0,0">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="110"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel>
-                            <TextBlock Text="Ban zamanı"
-                                       Style="{StaticResource LabelStyle}"/>
-                            <TextBlock Text="Süre bitimine kaç saniye kala?"
-                                       Style="{StaticResource HintStyle}"
-                                       Margin="0,3,10,0"/>
-                        </StackPanel>
-
-                        <ComboBox x:Name="AutoBanDelayComboBox"
-                                  Grid.Column="1"
-                                  SelectedIndex="4"
-                                  SelectionChanged="AutoBanDelayComboBox_SelectionChanged"
-                                  Style="{StaticResource InputComboBoxStyle}">
-                            <ComboBoxItem Content="1"/>
-                            <ComboBoxItem Content="2"/>
-                            <ComboBoxItem Content="3"/>
-                            <ComboBoxItem Content="4"/>
-                            <ComboBoxItem Content="5"/>
-                            <ComboBoxItem Content="6"/>
-                            <ComboBoxItem Content="7"/>
-                            <ComboBoxItem Content="8"/>
-                            <ComboBoxItem Content="9"/>
-                            <ComboBoxItem Content="10"/>
-                        </ComboBox>
-                    </Grid>
-
-                    <Border Grid.Row="3"
-                            Background="#10161D"
-                            BorderBrush="#253443"
-                            BorderThickness="1"
-                            CornerRadius="9"
-                            Padding="10"
-                            Margin="0,14,0,0">
-
-                        <TextBlock x:Name="AutoBanStatusText"
-                                   Text="Auto Ban hazır."
-                                   Foreground="#B7C0CB"
-                                   FontSize="11"
-                                   TextWrapping="Wrap"/>
-                    </Border>
-                </Grid>
-            </Border>
-
-            <!-- AUTO PICK -->
-            <Border Grid.Column="4"
-                    Style="{StaticResource CardStyle}">
-
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel>
-                            <TextBlock Text="AUTO PICK"
-                                       Style="{StaticResource SectionTitleStyle}"/>
-
-                            <TextBlock Text="Otomatik seçim"
-                                       Foreground="{StaticResource TextBrush}"
-                                       FontSize="18"
-                                       FontWeight="SemiBold"
-                                       Margin="0,5,0,0"/>
-
-                            <TextBlock Text="Hover + kilitleme • Öncelik: 1 → 2 → 3"
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Auto Ban"
+                                       Style="{StaticResource PageHeadingStyle}"/>
+                            <TextBlock Text="Ban tercihleri ve otomatik kilitleme zamanı"
                                        Style="{StaticResource HintStyle}"
                                        Margin="0,4,0,0"/>
                         </StackPanel>
 
-                        <CheckBox x:Name="AutoPickCheckBox"
-                                  Grid.Column="1"
-                                  Content="Aktif"
-                                  IsChecked="False"
-                                  Checked="AutoPickCheckBox_Checked"
-                                  Unchecked="AutoPickCheckBox_Unchecked"
-                                  Style="{StaticResource FeatureCheckBoxStyle}"/>
+                        <ScrollViewer Grid.Row="1"
+                                      VerticalScrollBarVisibility="Auto">
+                            <Border Style="{StaticResource CardStyle}"
+                                    MaxWidth="820"
+                                    HorizontalAlignment="Left">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="Otomatik yasaklama"
+                                                       Foreground="{StaticResource TextBrush}"
+                                                       FontSize="18"
+                                                       FontWeight="SemiBold"/>
+                                            <TextBlock Text="Öncelik sırası: 1 → 2 → 3"
+                                                       Style="{StaticResource HintStyle}"
+                                                       Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <CheckBox x:Name="AutoBanCheckBox"
+                                                  Grid.Column="1"
+                                                  Content="Aktif"
+                                                  IsChecked="False"
+                                                  Checked="AutoBanCheckBox_Checked"
+                                                  Unchecked="AutoBanCheckBox_Unchecked"
+                                                  Style="{StaticResource FeatureCheckBoxStyle}"/>
+                                    </Grid>
+
+                                    <Border Style="{StaticResource SubCardStyle}"
+                                            Margin="0,18,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="230"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="1. Ban tercihi" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBlock Text="Birinci öncelik" Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Width="30" Height="30" CornerRadius="7" ClipToBounds="True"
+                                                        Background="#202935" VerticalAlignment="Center">
+                                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=PrimaryBanChampionComboBox}"
+                                                           Width="30" Height="30" Stretch="UniformToFill"/>
+                                                </Border>
+                                                <ComboBox x:Name="PrimaryBanChampionComboBox"
+                                                          Grid.Column="2"
+                                                          IsTextSearchEnabled="True"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedValuePath="Id"
+                                                          TextSearch.TextPath="Name"
+                                                          SelectionChanged="BanChampionComboBox_SelectionChanged"
+                                                          Style="{StaticResource InputComboBoxStyle}"/>
+                                            </Grid>
+
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="230"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="2. Ban tercihi" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBlock Text="İkinci alternatif" Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Width="30" Height="30" CornerRadius="7" ClipToBounds="True"
+                                                        Background="#202935" VerticalAlignment="Center">
+                                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=SecondaryBanChampionComboBox}"
+                                                           Width="30" Height="30" Stretch="UniformToFill"/>
+                                                </Border>
+                                                <ComboBox x:Name="SecondaryBanChampionComboBox"
+                                                          Grid.Column="2"
+                                                          IsTextSearchEnabled="True"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedValuePath="Id"
+                                                          TextSearch.TextPath="Name"
+                                                          SelectionChanged="BanChampionComboBox_SelectionChanged"
+                                                          Style="{StaticResource InputComboBoxStyle}"/>
+                                            </Grid>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="230"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="3. Ban tercihi" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBlock Text="Son alternatif" Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Width="30" Height="30" CornerRadius="7" ClipToBounds="True"
+                                                        Background="#202935" VerticalAlignment="Center">
+                                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=TertiaryBanChampionComboBox}"
+                                                           Width="30" Height="30" Stretch="UniformToFill"/>
+                                                </Border>
+                                                <ComboBox x:Name="TertiaryBanChampionComboBox"
+                                                          Grid.Column="2"
+                                                          IsTextSearchEnabled="True"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedValuePath="Id"
+                                                          TextSearch.TextPath="Name"
+                                                          SelectionChanged="BanChampionComboBox_SelectionChanged"
+                                                          Style="{StaticResource InputComboBoxStyle}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource SubCardStyle}"
+                                            Margin="0,14,0,0">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="150"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="Ban zamanı" Style="{StaticResource LabelStyle}"/>
+                                                <TextBlock Text="Süre bitimine kaç saniye kala banlansın?"
+                                                           Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                            </StackPanel>
+                                            <ComboBox x:Name="AutoBanDelayComboBox"
+                                                      Grid.Column="1"
+                                                      SelectedIndex="4"
+                                                      SelectionChanged="AutoBanDelayComboBox_SelectionChanged"
+                                                      Style="{StaticResource InputComboBoxStyle}">
+                                                <ComboBoxItem Content="1"/>
+                                                <ComboBoxItem Content="2"/>
+                                                <ComboBoxItem Content="3"/>
+                                                <ComboBoxItem Content="4"/>
+                                                <ComboBoxItem Content="5"/>
+                                                <ComboBoxItem Content="6"/>
+                                                <ComboBoxItem Content="7"/>
+                                                <ComboBoxItem Content="8"/>
+                                                <ComboBoxItem Content="9"/>
+                                                <ComboBoxItem Content="10"/>
+                                            </ComboBox>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Background="#0D141C"
+                                            BorderBrush="#203040"
+                                            BorderThickness="1"
+                                            CornerRadius="9"
+                                            Padding="12"
+                                            Margin="0,14,0,0">
+                                        <TextBlock x:Name="AutoBanStatusText"
+                                                   Text="Auto Ban hazır."
+                                                   Foreground="#B7C0CB"
+                                                   FontSize="11"
+                                                   TextWrapping="Wrap"/>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </ScrollViewer>
                     </Grid>
 
-                    <Border Grid.Row="1"
-                            Style="{StaticResource SubCardStyle}"
-                            Margin="0,18,0,0">
+                    <!-- AUTO PICK PAGE -->
+                    <Grid x:Name="AutoPickPage"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <StackPanel>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="155"/>
-                                </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Auto Pick"
+                                       Style="{StaticResource PageHeadingStyle}"/>
+                            <TextBlock Text="Pick tercihleri, Auto Hover ve kilitleme zamanı"
+                                       Style="{StaticResource HintStyle}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
 
+                        <ScrollViewer Grid.Row="1"
+                                      VerticalScrollBarVisibility="Auto">
+                            <Border Style="{StaticResource CardStyle}"
+                                    MaxWidth="820"
+                                    HorizontalAlignment="Left">
                                 <StackPanel>
-                                    <TextBlock Text="1. Pick tercihi"
-                                               Style="{StaticResource LabelStyle}"/>
-                                    <TextBlock Text="Birinci öncelik"
-                                               Style="{StaticResource HintStyle}"
-                                               Margin="0,3,10,0"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="Otomatik seçim"
+                                                       Foreground="{StaticResource TextBrush}"
+                                                       FontSize="18"
+                                                       FontWeight="SemiBold"/>
+                                            <TextBlock Text="Öncelik sırası: 1 → 2 → 3"
+                                                       Style="{StaticResource HintStyle}"
+                                                       Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                        <CheckBox x:Name="AutoPickCheckBox"
+                                                  Grid.Column="1"
+                                                  Content="Aktif"
+                                                  IsChecked="False"
+                                                  Checked="AutoPickCheckBox_Checked"
+                                                  Unchecked="AutoPickCheckBox_Unchecked"
+                                                  Style="{StaticResource FeatureCheckBoxStyle}"/>
+                                    </Grid>
+
+                                    <Border Style="{StaticResource SubCardStyle}"
+                                            Margin="0,18,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="230"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="1. Pick tercihi" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBlock Text="Birinci öncelik" Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Width="30" Height="30" CornerRadius="7" ClipToBounds="True"
+                                                        Background="#202935" VerticalAlignment="Center">
+                                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=PrimaryPickChampionComboBox}"
+                                                           Width="30" Height="30" Stretch="UniformToFill"/>
+                                                </Border>
+                                                <ComboBox x:Name="PrimaryPickChampionComboBox"
+                                                          Grid.Column="2"
+                                                          IsTextSearchEnabled="True"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedValuePath="Id"
+                                                          TextSearch.TextPath="Name"
+                                                          SelectionChanged="PickChampionComboBox_SelectionChanged"
+                                                          Style="{StaticResource InputComboBoxStyle}"/>
+                                            </Grid>
+
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="230"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="2. Pick tercihi" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBlock Text="İkinci alternatif" Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Width="30" Height="30" CornerRadius="7" ClipToBounds="True"
+                                                        Background="#202935" VerticalAlignment="Center">
+                                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=SecondaryPickChampionComboBox}"
+                                                           Width="30" Height="30" Stretch="UniformToFill"/>
+                                                </Border>
+                                                <ComboBox x:Name="SecondaryPickChampionComboBox"
+                                                          Grid.Column="2"
+                                                          IsTextSearchEnabled="True"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedValuePath="Id"
+                                                          TextSearch.TextPath="Name"
+                                                          SelectionChanged="PickChampionComboBox_SelectionChanged"
+                                                          Style="{StaticResource InputComboBoxStyle}"/>
+                                            </Grid>
+
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                    <ColumnDefinition Width="230"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="3. Pick tercihi" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBlock Text="Son alternatif" Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                                </StackPanel>
+                                                <Border Grid.Column="1" Width="30" Height="30" CornerRadius="7" ClipToBounds="True"
+                                                        Background="#202935" VerticalAlignment="Center">
+                                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=TertiaryPickChampionComboBox}"
+                                                           Width="30" Height="30" Stretch="UniformToFill"/>
+                                                </Border>
+                                                <ComboBox x:Name="TertiaryPickChampionComboBox"
+                                                          Grid.Column="2"
+                                                          IsTextSearchEnabled="True"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedValuePath="Id"
+                                                          TextSearch.TextPath="Name"
+                                                          SelectionChanged="PickChampionComboBox_SelectionChanged"
+                                                          Style="{StaticResource InputComboBoxStyle}"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource SubCardStyle}"
+                                            Margin="0,14,0,0">
+                                        <StackPanel>
+                                            <CheckBox x:Name="AutoHoverPickCheckBox"
+                                                      Content="Pick tercihini otomatik göster"
+                                                      IsChecked="True"
+                                                      Checked="AutoHoverPickCheckBox_Changed"
+                                                      Unchecked="AutoHoverPickCheckBox_Changed"
+                                                      Style="{StaticResource FeatureCheckBoxStyle}"/>
+
+                                            <Grid Margin="0,14,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="150"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Pick zamanı" Style="{StaticResource LabelStyle}"/>
+                                                    <TextBlock Text="Süre bitimine kaç saniye kala kilitlensin?"
+                                                               Style="{StaticResource HintStyle}" Margin="0,3,10,0"/>
+                                                </StackPanel>
+                                                <ComboBox x:Name="AutoPickDelayComboBox"
+                                                          Grid.Column="1"
+                                                          SelectedIndex="4"
+                                                          SelectionChanged="AutoPickDelayComboBox_SelectionChanged"
+                                                          Style="{StaticResource InputComboBoxStyle}">
+                                                    <ComboBoxItem Content="1"/>
+                                                    <ComboBoxItem Content="2"/>
+                                                    <ComboBoxItem Content="3"/>
+                                                    <ComboBoxItem Content="4"/>
+                                                    <ComboBoxItem Content="5"/>
+                                                    <ComboBoxItem Content="6"/>
+                                                    <ComboBoxItem Content="7"/>
+                                                    <ComboBoxItem Content="8"/>
+                                                    <ComboBoxItem Content="9"/>
+                                                    <ComboBoxItem Content="10"/>
+                                                </ComboBox>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Background="#0D141C"
+                                            BorderBrush="#203040"
+                                            BorderThickness="1"
+                                            CornerRadius="9"
+                                            Padding="12"
+                                            Margin="0,14,0,0">
+                                        <TextBlock x:Name="AutoPickStatusText"
+                                                   Text="Auto Pick hazır."
+                                                   Foreground="#B7C0CB"
+                                                   FontSize="11"
+                                                   TextWrapping="Wrap"/>
+                                    </Border>
                                 </StackPanel>
+                            </Border>
+                        </ScrollViewer>
+                    </Grid>
 
-                                <Border Grid.Column="1"
-                                        Width="28"
-                                        Height="28"
-                                        CornerRadius="7"
-                                        ClipToBounds="True"
-                                        Background="#202935"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center">
+                    <!-- PROFILES PAGE -->
+                    <Grid x:Name="ProfilesPage"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=PrimaryPickChampionComboBox}"
-                                           Width="28"
-                                           Height="28"
-                                           Stretch="UniformToFill"/>
-                                </Border>
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                                <ComboBox x:Name="PrimaryPickChampionComboBox"
-                                          Height="38"
-                                          Grid.Column="2"
-                                          IsTextSearchEnabled="True"
-                                          DisplayMemberPath="Name"
-                                          SelectedValuePath="Id"
-                                          TextSearch.TextPath="Name"
-                                          SelectionChanged="PickChampionComboBox_SelectionChanged"
-                                          Style="{StaticResource InputComboBoxStyle}"/>
-                            </Grid>
+                            <StackPanel>
+                                <TextBlock Text="Profiller"
+                                           Style="{StaticResource PageHeadingStyle}"/>
+                                <TextBlock Text="LCU'nun sana atadığı role göre Auto Ban / Auto Pick ayarlarını otomatik değiştir."
+                                           Style="{StaticResource HintStyle}"
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
 
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="155"/>
-                                </Grid.ColumnDefinitions>
+                            <CheckBox x:Name="RoleProfilesEnabledCheckBox"
+                                      Grid.Column="1"
+                                      Content="Rol bazlı profiller aktif"
+                                      VerticalAlignment="Center"
+                                      Checked="RoleProfilesEnabledCheckBox_Changed"
+                                      Unchecked="RoleProfilesEnabledCheckBox_Changed"
+                                      Style="{StaticResource FeatureCheckBoxStyle}"/>
+                        </Grid>
 
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="205"/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- ROLE LIST -->
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource CardStyle}"
+                                    Padding="10">
                                 <StackPanel>
-                                    <TextBlock Text="2. Pick tercihi"
-                                               Style="{StaticResource LabelStyle}"/>
-                                    <TextBlock Text="İkinci alternatif"
-                                               Style="{StaticResource HintStyle}"
-                                               Margin="0,3,10,0"/>
+                                    <TextBlock Text="ROLLER"
+                                               Style="{StaticResource SectionTitleStyle}"
+                                               Margin="7,5,0,8"/>
+
+                                    <ListBox x:Name="RoleProfilesListBox"
+                                             Background="Transparent"
+                                             BorderThickness="0"
+                                             Foreground="{StaticResource TextBrush}"
+                                             SelectionChanged="RoleProfilesListBox_SelectionChanged">
+                                        <ListBox.Resources>
+                                            <Style TargetType="ListBoxItem">
+                                                <Setter Property="Foreground" Value="#C3CCD6"/>
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Padding" Value="12,10"/>
+                                                <Setter Property="Margin" Value="0,2"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter Property="Background" Value="#153029"/>
+                                                        <Setter Property="Foreground" Value="#73E1CE"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ListBox.Resources>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="28"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding RoleIcon}"
+                                                               FontSize="14"
+                                                               VerticalAlignment="Center"/>
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding RoleDisplayName}"
+                                                                   Foreground="#6E7C8C"
+                                                                   FontSize="10"
+                                                                   Margin="0,2,0,0"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
                                 </StackPanel>
+                            </Border>
 
-                                <Border Grid.Column="1"
-                                        Width="28"
-                                        Height="28"
-                                        CornerRadius="7"
-                                        ClipToBounds="True"
-                                        Background="#202935"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center">
+                            <!-- PROFILE EDITOR -->
+                            <ScrollViewer Grid.Column="2"
+                                          VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                    <Border Style="{StaticResource CardStyle}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
 
-                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=SecondaryPickChampionComboBox}"
-                                           Width="28"
-                                           Height="28"
-                                           Stretch="UniformToFill"/>
-                                </Border>
+                                            <StackPanel>
+                                                <TextBlock x:Name="ProfileEditorTitleText"
+                                                           Text="Mid Main"
+                                                           Foreground="#72DED0"
+                                                           FontSize="21"
+                                                           FontWeight="SemiBold"/>
+                                                <TextBlock x:Name="ProfileEditorRoleText"
+                                                           Text="MIDDLE rolü için otomasyon ayarları"
+                                                           Style="{StaticResource HintStyle}"
+                                                           Margin="0,4,0,0"/>
+                                            </StackPanel>
 
-                                <ComboBox x:Name="SecondaryPickChampionComboBox"
-                                          Height="38"
-                                          Grid.Column="2"
-                                          IsTextSearchEnabled="True"
-                                          DisplayMemberPath="Name"
-                                          SelectedValuePath="Id"
-                                          TextSearch.TextPath="Name"
-                                          SelectionChanged="PickChampionComboBox_SelectionChanged"
-                                          Style="{StaticResource InputComboBoxStyle}"/>
-                            </Grid>
+                                            <Border Grid.Column="1"
+                                                    Background="#10231F"
+                                                    BorderBrush="#25534A"
+                                                    BorderThickness="1"
+                                                    CornerRadius="16"
+                                                    Padding="12,6"
+                                                    VerticalAlignment="Center">
+                                                <TextBlock x:Name="ActiveRoleProfileBadgeText"
+                                                           Text="Aktif profil bekleniyor"
+                                                           Foreground="#72DED0"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
 
+                                    <Grid Margin="0,14,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="14"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- PROFILE BAN -->
+                                        <Border Grid.Column="0"
+                                                Style="{StaticResource CardStyle}">
+                                            <StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock Text="AUTO BAN"
+                                                                   Foreground="#B985FF"
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Text="1 → 2 → 3 önceliği"
+                                                                   Style="{StaticResource HintStyle}"
+                                                                   Margin="0,3,0,0"/>
+                                                    </StackPanel>
+                                                    <CheckBox x:Name="ProfileAutoBanCheckBox"
+                                                              Grid.Column="1"
+                                                              Content="Aktif"
+                                                              Checked="RoleProfileEditor_Changed"
+                                                              Unchecked="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource FeatureCheckBoxStyle}"/>
+                                                </Grid>
+
+                                                <Grid Margin="0,16,0,9">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="32"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="28" Height="28" CornerRadius="7" ClipToBounds="True"
+                                                            Background="#202935">
+                                                        <Image Source="{Binding SelectedItem.IconUrl, ElementName=ProfilePrimaryBanChampionComboBox}"
+                                                               Width="28" Height="28" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <ComboBox x:Name="ProfilePrimaryBanChampionComboBox"
+                                                              Grid.Column="1"
+                                                              Margin="8,0,0,0"
+                                                              IsTextSearchEnabled="True"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValuePath="Id"
+                                                              TextSearch.TextPath="Name"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}"/>
+                                                </Grid>
+
+                                                <Grid Margin="0,0,0,9">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="32"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="28" Height="28" CornerRadius="7" ClipToBounds="True"
+                                                            Background="#202935">
+                                                        <Image Source="{Binding SelectedItem.IconUrl, ElementName=ProfileSecondaryBanChampionComboBox}"
+                                                               Width="28" Height="28" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <ComboBox x:Name="ProfileSecondaryBanChampionComboBox"
+                                                              Grid.Column="1"
+                                                              Margin="8,0,0,0"
+                                                              IsTextSearchEnabled="True"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValuePath="Id"
+                                                              TextSearch.TextPath="Name"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}"/>
+                                                </Grid>
+
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="32"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="28" Height="28" CornerRadius="7" ClipToBounds="True"
+                                                            Background="#202935">
+                                                        <Image Source="{Binding SelectedItem.IconUrl, ElementName=ProfileTertiaryBanChampionComboBox}"
+                                                               Width="28" Height="28" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <ComboBox x:Name="ProfileTertiaryBanChampionComboBox"
+                                                              Grid.Column="1"
+                                                              Margin="8,0,0,0"
+                                                              IsTextSearchEnabled="True"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValuePath="Id"
+                                                              TextSearch.TextPath="Name"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}"/>
+                                                </Grid>
+
+                                                <Grid Margin="0,14,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="90"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Ban zamanı"
+                                                               Style="{StaticResource LabelStyle}"/>
+                                                    <ComboBox x:Name="ProfileAutoBanDelayComboBox"
+                                                              Grid.Column="1"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}">
+                                                        <ComboBoxItem Content="1"/>
+                                                        <ComboBoxItem Content="2"/>
+                                                        <ComboBoxItem Content="3"/>
+                                                        <ComboBoxItem Content="4"/>
+                                                        <ComboBoxItem Content="5"/>
+                                                        <ComboBoxItem Content="6"/>
+                                                        <ComboBoxItem Content="7"/>
+                                                        <ComboBoxItem Content="8"/>
+                                                        <ComboBoxItem Content="9"/>
+                                                        <ComboBoxItem Content="10"/>
+                                                    </ComboBox>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- PROFILE PICK -->
+                                        <Border Grid.Column="2"
+                                                Style="{StaticResource CardStyle}">
+                                            <StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock Text="AUTO PICK"
+                                                                   Foreground="#5EA0FF"
+                                                                   FontWeight="Bold"/>
+                                                        <TextBlock Text="1 → 2 → 3 önceliği"
+                                                                   Style="{StaticResource HintStyle}"
+                                                                   Margin="0,3,0,0"/>
+                                                    </StackPanel>
+                                                    <CheckBox x:Name="ProfileAutoPickCheckBox"
+                                                              Grid.Column="1"
+                                                              Content="Aktif"
+                                                              Checked="RoleProfileEditor_Changed"
+                                                              Unchecked="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource FeatureCheckBoxStyle}"/>
+                                                </Grid>
+
+                                                <Grid Margin="0,16,0,9">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="32"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="28" Height="28" CornerRadius="7" ClipToBounds="True"
+                                                            Background="#202935">
+                                                        <Image Source="{Binding SelectedItem.IconUrl, ElementName=ProfilePrimaryPickChampionComboBox}"
+                                                               Width="28" Height="28" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <ComboBox x:Name="ProfilePrimaryPickChampionComboBox"
+                                                              Grid.Column="1"
+                                                              Margin="8,0,0,0"
+                                                              IsTextSearchEnabled="True"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValuePath="Id"
+                                                              TextSearch.TextPath="Name"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}"/>
+                                                </Grid>
+
+                                                <Grid Margin="0,0,0,9">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="32"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="28" Height="28" CornerRadius="7" ClipToBounds="True"
+                                                            Background="#202935">
+                                                        <Image Source="{Binding SelectedItem.IconUrl, ElementName=ProfileSecondaryPickChampionComboBox}"
+                                                               Width="28" Height="28" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <ComboBox x:Name="ProfileSecondaryPickChampionComboBox"
+                                                              Grid.Column="1"
+                                                              Margin="8,0,0,0"
+                                                              IsTextSearchEnabled="True"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValuePath="Id"
+                                                              TextSearch.TextPath="Name"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}"/>
+                                                </Grid>
+
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="32"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Width="28" Height="28" CornerRadius="7" ClipToBounds="True"
+                                                            Background="#202935">
+                                                        <Image Source="{Binding SelectedItem.IconUrl, ElementName=ProfileTertiaryPickChampionComboBox}"
+                                                               Width="28" Height="28" Stretch="UniformToFill"/>
+                                                    </Border>
+                                                    <ComboBox x:Name="ProfileTertiaryPickChampionComboBox"
+                                                              Grid.Column="1"
+                                                              Margin="8,0,0,0"
+                                                              IsTextSearchEnabled="True"
+                                                              DisplayMemberPath="Name"
+                                                              SelectedValuePath="Id"
+                                                              TextSearch.TextPath="Name"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}"/>
+                                                </Grid>
+
+                                                <CheckBox x:Name="ProfileAutoHoverPickCheckBox"
+                                                          Content="Otomatik hover"
+                                                          Margin="0,14,0,0"
+                                                          Checked="RoleProfileEditor_Changed"
+                                                          Unchecked="RoleProfileEditor_Changed"
+                                                          Style="{StaticResource FeatureCheckBoxStyle}"/>
+
+                                                <Grid Margin="0,14,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="90"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Pick zamanı"
+                                                               Style="{StaticResource LabelStyle}"/>
+                                                    <ComboBox x:Name="ProfileAutoPickDelayComboBox"
+                                                              Grid.Column="1"
+                                                              SelectionChanged="RoleProfileEditor_Changed"
+                                                              Style="{StaticResource InputComboBoxStyle}">
+                                                        <ComboBoxItem Content="1"/>
+                                                        <ComboBoxItem Content="2"/>
+                                                        <ComboBoxItem Content="3"/>
+                                                        <ComboBoxItem Content="4"/>
+                                                        <ComboBoxItem Content="5"/>
+                                                        <ComboBoxItem Content="6"/>
+                                                        <ComboBoxItem Content="7"/>
+                                                        <ComboBoxItem Content="8"/>
+                                                        <ComboBoxItem Content="9"/>
+                                                        <ComboBoxItem Content="10"/>
+                                                    </ComboBox>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <Border Background="#0D161C"
+                                            BorderBrush="#21423E"
+                                            BorderThickness="1"
+                                            CornerRadius="10"
+                                            Padding="13"
+                                            Margin="0,14,0,0">
+                                        <TextBlock x:Name="RoleProfileStatusText"
+                                                   Text="Profiller otomatik kaydedilir. Champ Select başladığında atanan rol algılanır."
+                                                   Foreground="#79BFB5"
+                                                   FontSize="11"
+                                                   TextWrapping="Wrap"/>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+
+                    <!-- SETTINGS PAGE -->
+                    <Grid x:Name="SettingsPage"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Ayarlar"
+                                       Style="{StaticResource PageHeadingStyle}"/>
+                            <TextBlock Text="Uygulama davranışı ve pencere seçenekleri"
+                                       Style="{StaticResource HintStyle}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Border Grid.Row="1"
+                                Style="{StaticResource CardStyle}"
+                                MaxWidth="700"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="34"/>
-                                    <ColumnDefinition Width="155"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-
                                 <StackPanel>
-                                    <TextBlock Text="3. Pick tercihi"
-                                               Style="{StaticResource LabelStyle}"/>
-                                    <TextBlock Text="Son alternatif"
+                                    <TextBlock Text="Her zaman üstte"
+                                               Foreground="{StaticResource TextBrush}"
+                                               FontSize="16"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="RiftAssistant diğer pencerelerin üzerinde kalır."
                                                Style="{StaticResource HintStyle}"
-                                               Margin="0,3,10,0"/>
+                                               Margin="0,4,20,0"/>
                                 </StackPanel>
-
-                                <Border Grid.Column="1"
-                                        Width="28"
-                                        Height="28"
-                                        CornerRadius="7"
-                                        ClipToBounds="True"
-                                        Background="#202935"
-                                        Margin="0,0,6,0"
-                                        VerticalAlignment="Center">
-
-                                    <Image Source="{Binding SelectedItem.IconUrl, ElementName=TertiaryPickChampionComboBox}"
-                                           Width="28"
-                                           Height="28"
-                                           Stretch="UniformToFill"/>
-                                </Border>
-
-                                <ComboBox x:Name="TertiaryPickChampionComboBox"
-                                          Height="38"
-                                          Grid.Column="2"
-                                          IsTextSearchEnabled="True"
-                                          DisplayMemberPath="Name"
-                                          SelectedValuePath="Id"
-                                          TextSearch.TextPath="Name"
-                                          SelectionChanged="PickChampionComboBox_SelectionChanged"
-                                          Style="{StaticResource InputComboBoxStyle}"/>
+                                <CheckBox x:Name="TopMostCheckBox"
+                                          Grid.Column="1"
+                                          Content="Aktif"
+                                          IsChecked="True"
+                                          Checked="TopMostCheckBox_Checked"
+                                          Unchecked="TopMostCheckBox_Unchecked"
+                                          Style="{StaticResource FeatureCheckBoxStyle}"/>
                             </Grid>
-                        </StackPanel>
-                    </Border>
-
-                    <StackPanel Grid.Row="2"
-                                Margin="0,12,0,0">
-
-                        <CheckBox x:Name="AutoHoverPickCheckBox"
-                                  Content="Pick tercihini otomatik göster"
-                                  IsChecked="True"
-                                  Checked="AutoHoverPickCheckBox_Changed"
-                                  Unchecked="AutoHoverPickCheckBox_Changed"
-                                  Style="{StaticResource FeatureCheckBoxStyle}"
-                                  Margin="0,0,0,8"/>
-</StackPanel>
-
-                    <Grid Grid.Row="3"
-                          Margin="0,14,0,0">
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="110"/>
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel>
-                            <TextBlock Text="Pick zamanı"
-                                       Style="{StaticResource LabelStyle}"/>
-                            <TextBlock Text="Süre bitimine kaç saniye kala?"
-                                       Style="{StaticResource HintStyle}"
-                                       Margin="0,3,10,0"/>
-                        </StackPanel>
-
-                        <ComboBox x:Name="AutoPickDelayComboBox"
-                                  Grid.Column="1"
-                                  SelectedIndex="4"
-                                  SelectionChanged="AutoPickDelayComboBox_SelectionChanged"
-                                  Style="{StaticResource InputComboBoxStyle}">
-                            <ComboBoxItem Content="1"/>
-                            <ComboBoxItem Content="2"/>
-                            <ComboBoxItem Content="3"/>
-                            <ComboBoxItem Content="4"/>
-                            <ComboBoxItem Content="5"/>
-                            <ComboBoxItem Content="6"/>
-                            <ComboBoxItem Content="7"/>
-                            <ComboBoxItem Content="8"/>
-                            <ComboBoxItem Content="9"/>
-                            <ComboBoxItem Content="10"/>
-                        </ComboBox>
+                        </Border>
                     </Grid>
 
-                    <Border Grid.Row="4"
-                            Background="#10161D"
-                            BorderBrush="#253443"
-                            BorderThickness="1"
-                            CornerRadius="9"
-                            Padding="10"
-                            Margin="0,14,0,0">
+                    <!-- UPDATES PAGE -->
+                    <Grid x:Name="UpdatesPage"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="AutoPickStatusText"
-                                   Text="Auto Pick hazır."
-                                   Foreground="#B7C0CB"
-                                   FontSize="11"
-                                   TextWrapping="Wrap"/>
-                    </Border>
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Güncellemeler"
+                                       Style="{StaticResource PageHeadingStyle}"/>
+                            <TextBlock Text="RiftAssistant güncelleme durumu"
+                                       Style="{StaticResource HintStyle}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Border Grid.Row="1"
+                                Style="{StaticResource CardStyle}"
+                                MaxWidth="700"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="Otomatik güncelleme"
+                                           Foreground="{StaticResource TextBrush}"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock Text="Uygulama açılışında GitHub Releases üzerinden yeni sürümleri kontrol eder."
+                                           Style="{StaticResource HintStyle}"
+                                           Margin="0,6,0,16"/>
+                                <Button x:Name="CheckUpdatesButton"
+                                        Content="Güncellemeleri kontrol et"
+                                        Width="200"
+                                        HorizontalAlignment="Left"
+                                        Click="CheckUpdatesButton_Click"
+                                        Style="{StaticResource SecondaryButtonStyle}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- ABOUT PAGE -->
+                    <Grid x:Name="AboutPage"
+                          Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="Hakkında"
+                                       Style="{StaticResource PageHeadingStyle}"/>
+                            <TextBlock Text="RiftAssistant bilgileri"
+                                       Style="{StaticResource HintStyle}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Border Grid.Row="1"
+                                Style="{StaticResource CardStyle}"
+                                MaxWidth="700"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Width="54"
+                                            Height="54"
+                                            CornerRadius="14"
+                                            Background="#241D12"
+                                            BorderBrush="#5C4720"
+                                            BorderThickness="1">
+                                        <Image Source="/Assets/RiftAssistant.png"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Margin="14,3,0,0">
+                                        <TextBlock Text="RiftAssistant"
+                                                   Foreground="{StaticResource TextBrush}"
+                                                   FontSize="21"
+                                                   FontWeight="SemiBold"/>
+                                        <TextBlock Text="League Client Automation Assistant"
+                                                   Style="{StaticResource HintStyle}"
+                                                   Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <TextBlock Text="Developed by Kazım Karakaya with AI"
+                                           Foreground="#A8B3BF"
+                                           Margin="0,20,0,0"/>
+
+                                <Button Content="Hakkında penceresini aç"
+                                        Width="190"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,18,0,0"
+                                        Click="AboutButton_Click"
+                                        Style="{StaticResource SecondaryButtonStyle}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </Grid>
-            </Border>
-        </Grid>
-
-        <!-- FOOTER -->
-        <Border Grid.Row="3"
-                Style="{StaticResource CardStyle}"
-                Margin="0,14,0,0"
-                Padding="14">
-
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel>
-                    <TextBlock Text="UYGULAMA"
-                               Style="{StaticResource SectionTitleStyle}"/>
-
-                    <TextBlock Text="Pencere, güncelleme ve uygulama bilgileri"
-                               Foreground="{StaticResource TextBrush}"
-                               FontSize="15"
-                               FontWeight="SemiBold"
-                               Margin="0,3,0,0"/>
-
-                    <TextBlock Text="Güncellemeler açılışta otomatik kontrol edilir."
-                               Style="{StaticResource HintStyle}"
-                               Margin="0,3,0,0"/>
-
-                    <TextBlock x:Name="VersionSignatureText"
-                               Text="Developed by Kazım Karakaya with AI • v0.9.0-beta.1"
-                               Foreground="#667382"
-                               FontSize="10"
-                               FontWeight="SemiBold"
-                               Margin="0,7,0,0"/>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
-
-                    <CheckBox x:Name="TopMostCheckBox"
-                              Content="Her zaman üstte"
-                              IsChecked="True"
-                              Checked="TopMostCheckBox_Checked"
-                              Unchecked="TopMostCheckBox_Unchecked"
-                              Style="{StaticResource FeatureCheckBoxStyle}"
-                              Margin="0,0,16,0"/>
-
-                    <Button x:Name="CheckUpdatesButton"
-                            Content="Güncellemeleri kontrol et"
-                            Width="180"
-                            Click="CheckUpdatesButton_Click"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            Margin="0,0,8,0"/>
-
-                    <Button Content="Hakkında"
-                            Width="90"
-                            Click="AboutButton_Click"
-                            Style="{StaticResource SecondaryButtonStyle}"/>
-                </StackPanel>
             </Grid>
-        </Border>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>

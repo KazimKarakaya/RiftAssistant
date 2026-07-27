@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Input;
 using RiftAssistant.Core;
 using RiftAssistant.Models;
 using RiftAssistant.Services;
@@ -40,6 +42,13 @@ namespace RiftAssistant
         private int _lastAutoHoverChampionId;
         private long? _autoBanHandledActionId;
         private readonly SettingsService _settingsService;
+        private readonly RoleProfileService _roleProfileService;
+        private RoleProfileSettings _roleProfileSettings = new();
+        private RoleProfile? _selectedRoleProfile;
+        private RoleProfile? _activeRoleProfile;
+        private bool _isLoadingRoleProfileUi;
+        private string _lastAssignedPosition = string.Empty;
+        private DateTime _nextAssignedRoleProbeUtc = DateTime.MinValue;
         private bool _autoBanRunning;
         private AppSettings _settings = new();
         private bool _isLoadingSettings;
@@ -129,6 +138,210 @@ namespace RiftAssistant
             LcuStatusBadgeText.Foreground =
                 (Brush)new BrushConverter()
                     .ConvertFromString(foreground)!;
+        }
+
+        private void NavigationButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (sender is not Button button)
+                return;
+
+            string target =
+                button.Tag?.ToString()
+                ?? "Dashboard";
+
+            DashboardPage.Visibility = Visibility.Collapsed;
+            AutoAcceptPage.Visibility = Visibility.Collapsed;
+            AutoBanPage.Visibility = Visibility.Collapsed;
+            AutoPickPage.Visibility = Visibility.Collapsed;
+            ProfilesPage.Visibility = Visibility.Collapsed;
+            SettingsPage.Visibility = Visibility.Collapsed;
+            UpdatesPage.Visibility = Visibility.Collapsed;
+            AboutPage.Visibility = Visibility.Collapsed;
+
+            switch (target)
+            {
+                case "AutoAccept":
+                    AutoAcceptPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Auto Accept";
+                    break;
+
+                case "AutoBan":
+                    AutoBanPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Auto Ban";
+                    break;
+
+                case "AutoPick":
+                    AutoPickPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Auto Pick";
+                    break;
+
+                case "Profiles":
+                    ProfilesPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Profiller";
+                    break;
+
+                case "Settings":
+                    SettingsPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Ayarlar";
+                    break;
+
+                case "Updates":
+                    UpdatesPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Güncellemeler";
+                    break;
+
+                case "About":
+                    AboutPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Hakkında";
+                    break;
+
+                default:
+                    DashboardPage.Visibility = Visibility.Visible;
+                    PageTitleText.Text = "Dashboard";
+                    break;
+            }
+
+            RefreshNavigationStyle(button);
+        }
+
+        private void RefreshNavigationStyle(
+            Button activeButton)
+        {
+            Button[] buttons =
+            {
+                DashboardNavButton,
+                AutoAcceptNavButton,
+                AutoBanNavButton,
+                AutoPickNavButton,
+                ProfilesNavButton,
+                SettingsNavButton,
+                UpdatesNavButton,
+                AboutNavButton
+            };
+
+            foreach (Button navButton in buttons)
+            {
+                navButton.Background =
+                    Brushes.Transparent;
+
+                navButton.BorderBrush =
+                    Brushes.Transparent;
+
+                navButton.Foreground =
+                    new SolidColorBrush(
+                        Color.FromRgb(182, 192, 204)
+                    );
+            }
+
+            activeButton.Background =
+                new SolidColorBrush(
+                    Color.FromRgb(42, 36, 23)
+                );
+
+            activeButton.BorderBrush =
+                new SolidColorBrush(
+                    Color.FromRgb(98, 75, 32)
+                );
+
+            activeButton.Foreground =
+                new SolidColorBrush(
+                    Color.FromRgb(228, 185, 87)
+                );
+        }
+
+        private void RefreshDashboardAutomationState()
+        {
+            if (DashboardAutoAcceptStateText == null ||
+                DashboardAutoBanStateText == null ||
+                DashboardAutoPickStateText == null)
+            {
+                return;
+            }
+
+            SetDashboardState(
+                DashboardAutoAcceptStateText,
+                _autoAcceptEnabled
+            );
+
+            SetDashboardState(
+                DashboardAutoBanStateText,
+                _autoBanEnabled
+            );
+
+            SetDashboardState(
+                DashboardAutoPickStateText,
+                _autoPickEnabled
+            );
+        }
+
+        private static void SetDashboardState(
+            TextBlock textBlock,
+            bool enabled)
+        {
+            textBlock.Text =
+                enabled
+                    ? "Aktif"
+                    : "Kapalı";
+
+            textBlock.Foreground =
+                enabled
+                    ? new SolidColorBrush(
+                        Color.FromRgb(88, 214, 107)
+                    )
+                    : new SolidColorBrush(
+                        Color.FromRgb(141, 153, 168)
+                    );
+        }
+
+        private void TitleBar_MouseLeftButtonDown(
+            object sender,
+            MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left)
+                return;
+
+            if (e.ClickCount == 2)
+            {
+                ToggleWindowState();
+                return;
+            }
+
+            if (WindowState == WindowState.Maximized)
+                return;
+
+            DragMove();
+        }
+
+        private void MinimizeButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            WindowState =
+                WindowState.Minimized;
+        }
+
+        private void MaximizeButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            ToggleWindowState();
+        }
+
+        private void ToggleWindowState()
+        {
+            WindowState =
+                WindowState == WindowState.Maximized
+                    ? WindowState.Normal
+                    : WindowState.Maximized;
+        }
+
+        private void CloseButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            Close();
         }
 
         private static string GetDisplayVersion()
@@ -228,6 +441,16 @@ namespace RiftAssistant
 
         private int GetAutoBanDelaySeconds()
         {
+            if (_roleProfileSettings.Enabled &&
+                _activeRoleProfile != null)
+            {
+                return Math.Clamp(
+                    _activeRoleProfile.AutoBanAtSeconds,
+                    1,
+                    10
+                );
+            }
+
             if (AutoBanDelayComboBox.SelectedItem is ComboBoxItem selectedItem &&
                 int.TryParse(selectedItem.Content?.ToString(), out int seconds))
             {
@@ -238,6 +461,16 @@ namespace RiftAssistant
         }
         private int GetAutoPickDelaySeconds()
         {
+            if (_roleProfileSettings.Enabled &&
+                _activeRoleProfile != null)
+            {
+                return Math.Clamp(
+                    _activeRoleProfile.AutoPickAtSeconds,
+                    1,
+                    10
+                );
+            }
+
             if (AutoPickDelayComboBox.SelectedItem is ComboBoxItem selectedItem &&
                 int.TryParse(selectedItem.Content?.ToString(), out int seconds))
             {
@@ -319,7 +552,7 @@ int pickDelay =
         {
             int autoBanAtSeconds =
                 Math.Clamp(
-                    _settings.AutoBanAtSeconds,
+                    GetAutoBanDelaySeconds(),
                     1,
                     10
                 );
@@ -429,6 +662,7 @@ int pickDelay =
                 AutoAcceptStatusText.Text = "Auto Accept hazır.";
 
             SaveSettings();
+            RefreshDashboardAutomationState();
         }
 
         private void AutoAcceptCheckBox_Unchecked(
@@ -443,6 +677,7 @@ int pickDelay =
                 AutoAcceptStatusText.Text = "Auto Accept kapalı.";
 
             SaveSettings();
+            RefreshDashboardAutomationState();
         }
         private void AutoBanCheckBox_Checked(
     object sender,
@@ -451,6 +686,7 @@ int pickDelay =
             _autoBanEnabled = true;
 
             SaveSettings();
+            RefreshDashboardAutomationState();
         }
 
         private void AutoBanCheckBox_Unchecked(
@@ -460,6 +696,7 @@ int pickDelay =
             _autoBanEnabled = false;
 
             SaveSettings();
+            RefreshDashboardAutomationState();
         }
         private void TopMostCheckBox_Checked(
     object sender,
@@ -541,6 +778,7 @@ int pickDelay =
         public MainWindow()
         {
             _settingsService = new SettingsService();
+            _roleProfileService = new RoleProfileService();
 
             // XAML oluşturulurken Checked/TextChanged/SelectionChanged eventleri
             // tetiklenebilir. Bu sırada ayar kaydetmeye çalışma.
@@ -565,9 +803,754 @@ int pickDelay =
                 new ChampionService(_lcuClient);
 
             LoadSettings();
+            LoadRoleProfiles();
+            RefreshDashboardAutomationState();
+
+            RefreshNavigationStyle(
+                DashboardNavButton
+            );
+
             _uiReady = true;
         }
       
+        private void LoadRoleProfiles()
+        {
+            bool existed =
+                _roleProfileService.Exists();
+
+            _roleProfileSettings =
+                _roleProfileService.Load();
+
+            if (!existed ||
+                _roleProfileSettings.Profiles == null ||
+                _roleProfileSettings.Profiles.Count == 0)
+            {
+                _roleProfileSettings =
+                    CreateRoleProfilesFromCurrentSettings();
+
+                _roleProfileService.Save(
+                    _roleProfileSettings
+                );
+            }
+
+            EnsureRequiredRoleProfiles();
+
+            _isLoadingRoleProfileUi = true;
+
+            try
+            {
+                RoleProfilesEnabledCheckBox.IsChecked =
+                    _roleProfileSettings.Enabled;
+
+                RoleProfilesListBox.ItemsSource =
+                    _roleProfileSettings.Profiles;
+
+                _selectedRoleProfile =
+                    _roleProfileSettings.Profiles
+                        .FirstOrDefault(profile =>
+                            profile.RoleKey.Equals(
+                                _roleProfileSettings.SelectedRoleKey,
+                                StringComparison.OrdinalIgnoreCase
+                            ))
+                    ?? _roleProfileSettings.Profiles
+                        .FirstOrDefault();
+
+                RoleProfilesListBox.SelectedItem =
+                    _selectedRoleProfile;
+
+                LoadSelectedRoleProfileIntoUi();
+            }
+            finally
+            {
+                _isLoadingRoleProfileUi = false;
+            }
+
+            RefreshRoleProfileStatus();
+        }
+
+        private RoleProfileSettings CreateRoleProfilesFromCurrentSettings()
+        {
+            RoleProfileSettings settings =
+                new()
+                {
+                    Enabled = false,
+                    SelectedRoleKey = "middle"
+                };
+
+            settings.Profiles.Add(
+                CreateRoleProfile(
+                    "top",
+                    "Top"
+                )
+            );
+
+            settings.Profiles.Add(
+                CreateRoleProfile(
+                    "jungle",
+                    "Jungle"
+                )
+            );
+
+            settings.Profiles.Add(
+                CreateRoleProfile(
+                    "middle",
+                    "Mid"
+                )
+            );
+
+            settings.Profiles.Add(
+                CreateRoleProfile(
+                    "bottom",
+                    "ADC"
+                )
+            );
+
+            settings.Profiles.Add(
+                CreateRoleProfile(
+                    "utility",
+                    "Support"
+                )
+            );
+
+            return settings;
+        }
+
+        private RoleProfile CreateRoleProfile(
+            string roleKey,
+            string name)
+        {
+            return new RoleProfile
+            {
+                RoleKey = roleKey,
+                Name = name,
+
+                AutoBanEnabled = _autoBanEnabled,
+                PrimaryBanChampionId = _settings.PrimaryBanChampionId,
+                SecondaryBanChampionId = _settings.SecondaryBanChampionId,
+                TertiaryBanChampionId = _settings.TertiaryBanChampionId,
+                AutoBanAtSeconds = _settings.AutoBanAtSeconds,
+
+                AutoPickEnabled = _autoPickEnabled,
+                AutoHoverPickEnabled = _settings.AutoHoverPickEnabled,
+                PrimaryPickChampionId = _settings.PrimaryPickChampionId,
+                SecondaryPickChampionId = _settings.SecondaryPickChampionId,
+                TertiaryPickChampionId = _settings.TertiaryPickChampionId,
+                AutoPickAtSeconds = _settings.AutoPickAtSeconds
+            };
+        }
+
+        private void EnsureRequiredRoleProfiles()
+        {
+            string[] roleKeys =
+            {
+                "top",
+                "jungle",
+                "middle",
+                "bottom",
+                "utility"
+            };
+
+            string[] names =
+            {
+                "Top",
+                "Jungle",
+                "Mid",
+                "ADC",
+                "Support"
+            };
+
+            for (int i = 0; i < roleKeys.Length; i++)
+            {
+                if (_roleProfileSettings.Profiles.Any(
+                    profile =>
+                        profile.RoleKey.Equals(
+                            roleKeys[i],
+                            StringComparison.OrdinalIgnoreCase
+                        )))
+                {
+                    continue;
+                }
+
+                _roleProfileSettings.Profiles.Add(
+                    CreateRoleProfile(
+                        roleKeys[i],
+                        names[i]
+                    )
+                );
+            }
+
+            _roleProfileService.Save(
+                _roleProfileSettings
+            );
+        }
+
+        private void LoadSelectedRoleProfileIntoUi()
+        {
+            RoleProfile? profile =
+                _selectedRoleProfile;
+
+            if (profile == null)
+                return;
+
+            bool previousState =
+                _isLoadingRoleProfileUi;
+
+            _isLoadingRoleProfileUi = true;
+
+            try
+            {
+                ProfileEditorTitleText.Text =
+                    $"{profile.Name} Main";
+
+                ProfileEditorRoleText.Text =
+                    $"{GetRoleDisplayName(profile.RoleKey).ToUpperInvariant()} rolü için otomasyon ayarları";
+
+                ProfileAutoBanCheckBox.IsChecked =
+                    profile.AutoBanEnabled;
+
+                ProfilePrimaryBanChampionComboBox.SelectedValue =
+                    profile.PrimaryBanChampionId;
+
+                ProfileSecondaryBanChampionComboBox.SelectedValue =
+                    profile.SecondaryBanChampionId;
+
+                ProfileTertiaryBanChampionComboBox.SelectedValue =
+                    profile.TertiaryBanChampionId;
+
+                ProfileAutoBanDelayComboBox.SelectedIndex =
+                    Math.Clamp(
+                        profile.AutoBanAtSeconds,
+                        1,
+                        10
+                    ) - 1;
+
+                ProfileAutoPickCheckBox.IsChecked =
+                    profile.AutoPickEnabled;
+
+                ProfileAutoHoverPickCheckBox.IsChecked =
+                    profile.AutoHoverPickEnabled;
+
+                ProfilePrimaryPickChampionComboBox.SelectedValue =
+                    profile.PrimaryPickChampionId;
+
+                ProfileSecondaryPickChampionComboBox.SelectedValue =
+                    profile.SecondaryPickChampionId;
+
+                ProfileTertiaryPickChampionComboBox.SelectedValue =
+                    profile.TertiaryPickChampionId;
+
+                ProfileAutoPickDelayComboBox.SelectedIndex =
+                    Math.Clamp(
+                        profile.AutoPickAtSeconds,
+                        1,
+                        10
+                    ) - 1;
+            }
+            finally
+            {
+                _isLoadingRoleProfileUi =
+                    previousState;
+            }
+        }
+
+        private void SaveSelectedRoleProfileFromUi()
+        {
+            if (_isLoadingRoleProfileUi ||
+                !_uiReady)
+            {
+                return;
+            }
+
+            RoleProfile? profile =
+                _selectedRoleProfile;
+
+            if (profile == null)
+                return;
+
+            profile.AutoBanEnabled =
+                ProfileAutoBanCheckBox.IsChecked == true;
+
+            profile.PrimaryBanChampionId =
+                ProfilePrimaryBanChampionComboBox.SelectedValue
+                    is int primaryBanId
+                        ? primaryBanId
+                        : 0;
+
+            profile.SecondaryBanChampionId =
+                ProfileSecondaryBanChampionComboBox.SelectedValue
+                    is int secondaryBanId
+                        ? secondaryBanId
+                        : 0;
+
+            profile.TertiaryBanChampionId =
+                ProfileTertiaryBanChampionComboBox.SelectedValue
+                    is int tertiaryBanId
+                        ? tertiaryBanId
+                        : 0;
+
+            if (ProfileAutoBanDelayComboBox.SelectedItem
+                is ComboBoxItem banDelayItem &&
+                int.TryParse(
+                    banDelayItem.Content?.ToString(),
+                    out int banDelay))
+            {
+                profile.AutoBanAtSeconds =
+                    banDelay;
+            }
+
+            profile.AutoPickEnabled =
+                ProfileAutoPickCheckBox.IsChecked == true;
+
+            profile.AutoHoverPickEnabled =
+                ProfileAutoHoverPickCheckBox.IsChecked == true;
+
+            profile.PrimaryPickChampionId =
+                ProfilePrimaryPickChampionComboBox.SelectedValue
+                    is int primaryPickId
+                        ? primaryPickId
+                        : 0;
+
+            profile.SecondaryPickChampionId =
+                ProfileSecondaryPickChampionComboBox.SelectedValue
+                    is int secondaryPickId
+                        ? secondaryPickId
+                        : 0;
+
+            profile.TertiaryPickChampionId =
+                ProfileTertiaryPickChampionComboBox.SelectedValue
+                    is int tertiaryPickId
+                        ? tertiaryPickId
+                        : 0;
+
+            if (ProfileAutoPickDelayComboBox.SelectedItem
+                is ComboBoxItem pickDelayItem &&
+                int.TryParse(
+                    pickDelayItem.Content?.ToString(),
+                    out int pickDelay))
+            {
+                profile.AutoPickAtSeconds =
+                    pickDelay;
+            }
+
+            _roleProfileSettings.SelectedRoleKey =
+                profile.RoleKey;
+
+            _roleProfileService.Save(
+                _roleProfileSettings
+            );
+
+            RoleProfileStatusText.Text =
+                $"{profile.Name} profili kaydedildi ✓";
+        }
+
+        private void RoleProfilesEnabledCheckBox_Changed(
+            object sender,
+            RoutedEventArgs e)
+        {
+            if (_isLoadingRoleProfileUi)
+                return;
+
+            _roleProfileSettings.Enabled =
+                RoleProfilesEnabledCheckBox.IsChecked == true;
+
+            if (!_roleProfileSettings.Enabled)
+            {
+                ResetActiveRoleProfile();
+            }
+
+            _roleProfileService.Save(
+                _roleProfileSettings
+            );
+
+            RefreshRoleProfileStatus();
+        }
+
+        private void RoleProfilesListBox_SelectionChanged(
+            object sender,
+            SelectionChangedEventArgs e)
+        {
+            if (RoleProfilesListBox.SelectedItem
+                is not RoleProfile profile)
+            {
+                return;
+            }
+
+            _selectedRoleProfile =
+                profile;
+
+            _roleProfileSettings.SelectedRoleKey =
+                profile.RoleKey;
+
+            _roleProfileService.Save(
+                _roleProfileSettings
+            );
+
+            LoadSelectedRoleProfileIntoUi();
+        }
+
+        private void RoleProfileEditor_Changed(
+            object sender,
+            RoutedEventArgs e)
+        {
+            SaveSelectedRoleProfileFromUi();
+        }
+
+        private void RoleProfileEditor_Changed(
+            object sender,
+            SelectionChangedEventArgs e)
+        {
+            SaveSelectedRoleProfileFromUi();
+        }
+
+        private void RefreshRoleProfileStatus()
+        {
+            if (RoleProfileStatusText == null ||
+                DashboardRoleProfileText == null)
+            {
+                return;
+            }
+
+            if (!_roleProfileSettings.Enabled)
+            {
+                RoleProfileStatusText.Text =
+                    "Rol bazlı profiller kapalı. Auto Ban / Auto Pick genel ayarları kullanılır.";
+
+                DashboardRoleProfileText.Text =
+                    "Rol profili: kapalı";
+
+                ActiveRoleProfileBadgeText.Text =
+                    "Profiller kapalı";
+
+                return;
+            }
+
+            if (_activeRoleProfile == null)
+            {
+                RoleProfileStatusText.Text =
+                    "Profiller aktif. Champ Select'te sana atanan rol bekleniyor.";
+
+                DashboardRoleProfileText.Text =
+                    "Rol profili: rol bekleniyor";
+
+                ActiveRoleProfileBadgeText.Text =
+                    "Rol bekleniyor";
+
+                return;
+            }
+
+            string roleName =
+                GetRoleDisplayName(
+                    _activeRoleProfile.RoleKey
+                );
+
+            RoleProfileStatusText.Text =
+                $"Atanan rol: {roleName} • {_activeRoleProfile.Name} profili aktif.";
+
+            DashboardRoleProfileText.Text =
+                $"Rol: {roleName} • Profil: {_activeRoleProfile.Name}";
+
+            ActiveRoleProfileBadgeText.Text =
+                $"{roleName} • {_activeRoleProfile.Name}";
+        }
+
+        private static string GetRoleDisplayName(
+            string roleKey)
+        {
+            return roleKey
+                .Trim()
+                .ToLowerInvariant() switch
+            {
+                "top" => "TOP",
+                "jungle" => "JUNGLE",
+                "middle" => "MID",
+                "bottom" => "ADC",
+                "utility" => "SUPPORT",
+                _ => roleKey.ToUpperInvariant()
+            };
+        }
+
+        private async Task UpdateAssignedRoleProfileAsync(
+            ChampSelectSession session)
+        {
+            if (!_roleProfileSettings.Enabled)
+            {
+                ResetActiveRoleProfile();
+                return;
+            }
+
+            string assignedPosition =
+                TryGetAssignedPositionFromSessionModel(
+                    session
+                );
+
+            if (string.IsNullOrWhiteSpace(
+                    assignedPosition) &&
+                DateTime.UtcNow >=
+                    _nextAssignedRoleProbeUtc)
+            {
+                _nextAssignedRoleProbeUtc =
+                    DateTime.UtcNow.AddSeconds(1);
+
+                assignedPosition =
+                    await GetAssignedPositionFromRawSessionAsync(
+                        session.LocalPlayerCellId
+                    );
+            }
+
+            assignedPosition =
+                NormalizeAssignedPosition(
+                    assignedPosition
+                );
+
+            if (string.IsNullOrWhiteSpace(
+                assignedPosition))
+            {
+                return;
+            }
+
+            if (assignedPosition.Equals(
+                _lastAssignedPosition,
+                StringComparison.OrdinalIgnoreCase) &&
+                _activeRoleProfile != null)
+            {
+                return;
+            }
+
+            RoleProfile? profile =
+                _roleProfileSettings.Profiles
+                    .FirstOrDefault(item =>
+                        item.RoleKey.Equals(
+                            assignedPosition,
+                            StringComparison.OrdinalIgnoreCase
+                        ));
+
+            _lastAssignedPosition =
+                assignedPosition;
+
+            _activeRoleProfile =
+                profile;
+
+            if (profile != null)
+            {
+                WriteDebugLog(
+                    $"[ROLE PROFILE] AtananRol={assignedPosition} | Profil={profile.Name}"
+                );
+            }
+            else
+            {
+                WriteDebugLog(
+                    $"[ROLE PROFILE] AtananRol={assignedPosition} | Profil bulunamadı"
+                );
+            }
+
+            RefreshRoleProfileStatus();
+        }
+
+        private string TryGetAssignedPositionFromSessionModel(
+            ChampSelectSession session)
+        {
+            object? localMember =
+                session.MyTeam
+                    .FirstOrDefault(member =>
+                        member.CellId ==
+                        session.LocalPlayerCellId);
+
+            if (localMember == null)
+                return string.Empty;
+
+            try
+            {
+                var property =
+                    localMember
+                        .GetType()
+                        .GetProperty(
+                            "AssignedPosition"
+                        );
+
+                return property?
+                    .GetValue(localMember)?
+                    .ToString()
+                    ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private async Task<string> GetAssignedPositionFromRawSessionAsync(
+            long localPlayerCellId)
+        {
+            try
+            {
+                string json =
+                    await _lcuClient.GetStringAsync(
+                        "/lol-champ-select/v1/session"
+                    );
+
+                using JsonDocument document =
+                    JsonDocument.Parse(json);
+
+                JsonElement root =
+                    document.RootElement;
+
+                if (!root.TryGetProperty(
+                    "myTeam",
+                    out JsonElement myTeam) ||
+                    myTeam.ValueKind !=
+                    JsonValueKind.Array)
+                {
+                    return string.Empty;
+                }
+
+                foreach (JsonElement member
+                    in myTeam.EnumerateArray())
+                {
+                    if (!member.TryGetProperty(
+                            "cellId",
+                            out JsonElement cellIdElement))
+                    {
+                        continue;
+                    }
+
+                    if (cellIdElement.GetInt64() !=
+                        localPlayerCellId)
+                    {
+                        continue;
+                    }
+
+                    if (!member.TryGetProperty(
+                            "assignedPosition",
+                            out JsonElement roleElement))
+                    {
+                        return string.Empty;
+                    }
+
+                    return roleElement.GetString()
+                        ?? string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteDebugLog(
+                    $"[ROLE PROFILE] Rol okunamadı | {ex.Message}"
+                );
+            }
+
+            return string.Empty;
+        }
+
+        private static string NormalizeAssignedPosition(
+            string? assignedPosition)
+        {
+            if (string.IsNullOrWhiteSpace(
+                assignedPosition))
+            {
+                return string.Empty;
+            }
+
+            string value =
+                assignedPosition
+                    .Trim()
+                    .ToLowerInvariant();
+
+            return value switch
+            {
+                "support" => "utility",
+                "mid" => "middle",
+                "adc" => "bottom",
+                _ => value
+            };
+        }
+
+        private void ResetActiveRoleProfile()
+        {
+            if (_activeRoleProfile == null &&
+                string.IsNullOrEmpty(
+                    _lastAssignedPosition))
+            {
+                RefreshRoleProfileStatus();
+                return;
+            }
+
+            _activeRoleProfile =
+                null;
+
+            _lastAssignedPosition =
+                string.Empty;
+
+            _nextAssignedRoleProbeUtc =
+                DateTime.MinValue;
+
+            RefreshRoleProfileStatus();
+        }
+
+        private bool IsEffectiveAutoBanEnabled()
+        {
+            return _roleProfileSettings.Enabled &&
+                   _activeRoleProfile != null
+                ? _activeRoleProfile.AutoBanEnabled
+                : _autoBanEnabled;
+        }
+
+        private bool IsEffectiveAutoPickEnabled()
+        {
+            return _roleProfileSettings.Enabled &&
+                   _activeRoleProfile != null
+                ? _activeRoleProfile.AutoPickEnabled
+                : _autoPickEnabled;
+        }
+
+        private bool IsEffectiveAutoHoverEnabled()
+        {
+            return _roleProfileSettings.Enabled &&
+                   _activeRoleProfile != null
+                ? _activeRoleProfile.AutoHoverPickEnabled
+                : _settings.AutoHoverPickEnabled;
+        }
+
+        private int[] GetEffectiveBanPreferences()
+        {
+            if (_roleProfileSettings.Enabled &&
+                _activeRoleProfile != null)
+            {
+                return new[]
+                {
+                    _activeRoleProfile.PrimaryBanChampionId,
+                    _activeRoleProfile.SecondaryBanChampionId,
+                    _activeRoleProfile.TertiaryBanChampionId
+                };
+            }
+
+            return new[]
+            {
+                _settings.PrimaryBanChampionId,
+                _settings.SecondaryBanChampionId,
+                _settings.TertiaryBanChampionId
+            };
+        }
+
+        private int[] GetEffectivePickPreferences()
+        {
+            if (_roleProfileSettings.Enabled &&
+                _activeRoleProfile != null)
+            {
+                return new[]
+                {
+                    _activeRoleProfile.PrimaryPickChampionId,
+                    _activeRoleProfile.SecondaryPickChampionId,
+                    _activeRoleProfile.TertiaryPickChampionId
+                };
+            }
+
+            return new[]
+            {
+                _settings.PrimaryPickChampionId,
+                _settings.SecondaryPickChampionId,
+                _settings.TertiaryPickChampionId
+            };
+        }
+
         private async Task LoadChampionsAsync()
         {
             try
@@ -591,6 +1574,16 @@ int pickDelay =
                     PrimaryPickChampionComboBox.ItemsSource = _champions;
                     SecondaryPickChampionComboBox.ItemsSource = _champions;
                     TertiaryPickChampionComboBox.ItemsSource = _champions;
+
+                    // ROLE PROFILES - AUTO BAN
+                    ProfilePrimaryBanChampionComboBox.ItemsSource = _champions;
+                    ProfileSecondaryBanChampionComboBox.ItemsSource = _champions;
+                    ProfileTertiaryBanChampionComboBox.ItemsSource = _champions;
+
+                    // ROLE PROFILES - AUTO PICK
+                    ProfilePrimaryPickChampionComboBox.ItemsSource = _champions;
+                    ProfileSecondaryPickChampionComboBox.ItemsSource = _champions;
+                    ProfileTertiaryPickChampionComboBox.ItemsSource = _champions;
 
                     // Kayıtlı ban tercihleri
                     if (_settings.PrimaryBanChampionId > 0)
@@ -617,6 +1610,8 @@ int pickDelay =
                     if (_settings.TertiaryPickChampionId > 0)
                         TertiaryPickChampionComboBox.SelectedValue =
                             _settings.TertiaryPickChampionId;
+
+                    LoadSelectedRoleProfileIntoUi();
                 }
                 finally
                 {
@@ -666,6 +1661,7 @@ int pickDelay =
         {
             _autoPickEnabled = true;
             SaveSettings();
+            RefreshDashboardAutomationState();
         }
 
         private void AutoPickCheckBox_Unchecked(
@@ -674,6 +1670,7 @@ int pickDelay =
         {
             _autoPickEnabled = false;
             SaveSettings();
+            RefreshDashboardAutomationState();
         }
 
         private void AutoPickDelayComboBox_SelectionChanged(
@@ -876,6 +1873,8 @@ int pickDelay =
 
                         _readyCheckHandled = false;
                         _autoBanHandledActionId = null;
+                        ResetActiveRoleProfile();
+
                         StatusText.Text =
                             $"LCU Bağlandı ✓ | Durum: {phase}";
                     }
@@ -898,6 +1897,7 @@ int pickDelay =
                     ResetAutoPickState();
                     _autoBanHandledActionId = null;
                     _readyCheckHandled = false;
+                    ResetActiveRoleProfile();
 
                     WriteDebugLog(
                         $"[LCU RECONNECT] Bağlantı koptu | {ex.Message}"
@@ -1040,6 +2040,13 @@ int pickDelay =
                 var session = await sessionTask;
                 var timer = await timerTask;
 
+                if (session != null)
+                {
+                    await UpdateAssignedRoleProfileAsync(
+                        session
+                    );
+                }
+
                 if (session == null || timer == null)
                 {
                     ResetStableTimer();
@@ -1057,8 +2064,8 @@ int pickDelay =
                 // AUTO HOVER:
                 // Auto Pick açık + Auto Hover açık ise, hazırlık/ban-pick
                 // boyunca ilk uygun pick tercihini takımımıza göster.
-                if (_autoPickEnabled &&
-                    _settings.AutoHoverPickEnabled &&
+                if (IsEffectiveAutoPickEnabled() &&
+                    IsEffectiveAutoHoverEnabled() &&
                     (phase.Equals(
                         "PLANNING",
                         StringComparison.OrdinalIgnoreCase) ||
@@ -1134,7 +2141,7 @@ int pickDelay =
                     int autoBanAtSeconds =
                         GetAutoBanDelaySeconds();
 
-                    if (_autoBanEnabled &&
+                    if (IsEffectiveAutoBanEnabled() &&
                         remainingSeconds <= autoBanAtSeconds)
                     {
                         WriteDebugLog(
@@ -1184,7 +2191,7 @@ int pickDelay =
                     int autoPickAtSeconds =
                         GetAutoPickDelaySeconds();
 
-                    if (_autoPickEnabled &&
+                    if (IsEffectiveAutoPickEnabled() &&
                         remainingSeconds <= autoPickAtSeconds)
                     {
                         WriteDebugLog(
@@ -1247,11 +2254,7 @@ int pickDelay =
             ChampSelectSession session)
         {
             int[] preferences =
-            {
-                _settings.PrimaryPickChampionId,
-                _settings.SecondaryPickChampionId,
-                _settings.TertiaryPickChampionId
-            };
+                GetEffectivePickPreferences();
 
             HashSet<int> unavailable =
                 GetUnavailablePickChampions(session);
@@ -1273,8 +2276,8 @@ int pickDelay =
         private async Task TryAutoHoverPickAsync(
             ChampSelectSession session)
         {
-            if (!_autoPickEnabled ||
-                !_settings.AutoHoverPickEnabled ||
+            if (!IsEffectiveAutoPickEnabled() ||
+                !IsEffectiveAutoHoverEnabled() ||
                 _autoHoverRunning)
             {
                 return;
@@ -1437,11 +2440,7 @@ int pickDelay =
             ChampSelectSession session)
         {
             int[] preferences =
-            {
-                _settings.PrimaryPickChampionId,
-                _settings.SecondaryPickChampionId,
-                _settings.TertiaryPickChampionId
-            };
+                GetEffectivePickPreferences();
 
             HashSet<int> unavailable =
                 GetUnavailablePickChampions(session);
@@ -1483,7 +2482,7 @@ int pickDelay =
             ChampSelectAction pickAction,
             double remainingSeconds)
         {
-            if (!_autoPickEnabled)
+            if (!IsEffectiveAutoPickEnabled())
                 return;
 
             int autoPickAtSeconds =
@@ -1775,7 +2774,7 @@ int pickDelay =
     ChampSelectAction banAction,
     double remainingSeconds)
         {
-            if (!_autoBanEnabled)
+            if (!IsEffectiveAutoBanEnabled())
                 return;
             int autoBanAtSeconds = GetAutoBanDelaySeconds();
 
@@ -2101,11 +3100,7 @@ int pickDelay =
     double remainingSeconds)
         {
             int[] preferences =
-            {
-        _settings.PrimaryBanChampionId,
-        _settings.SecondaryBanChampionId,
-        _settings.TertiaryBanChampionId
-    };
+                GetEffectiveBanPreferences();
 
             HashSet<int> bannableChampions =
                 await _champSelectService
