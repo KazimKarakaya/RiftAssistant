@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using RiftAssistant.Core;
 using RiftAssistant.Models;
 using RiftAssistant.Services;
@@ -23,6 +24,8 @@ namespace RiftAssistant
         private List<Champion> _champions = new();
 
         private bool _isConnected;
+        private bool _connectionLoopStarted;
+        private CancellationTokenSource? _connectionLoopCancellation;
         private bool _autoAcceptEnabled = true;
 
         // ReadyCheck kontrolü
@@ -47,6 +50,87 @@ namespace RiftAssistant
 
         private double _stableRemainingSeconds = 0;
         private long _stableTimerLastTick;
+        private enum LcuBadgeState
+        {
+            Waiting,
+            Connecting,
+            Connected,
+            Disconnected
+        }
+
+        private void SetLcuBadge(
+            LcuBadgeState state)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(
+                    () => SetLcuBadge(state)
+                );
+
+                return;
+            }
+
+            string text;
+            string background;
+            string border;
+            string dot;
+            string foreground;
+
+            switch (state)
+            {
+                case LcuBadgeState.Connected:
+                    text = "Bağlı";
+                    background = "#18251B";
+                    border = "#315537";
+                    dot = "#55D66B";
+                    foreground = "#A9E8B3";
+                    break;
+
+                case LcuBadgeState.Connecting:
+                    text = "Bağlanıyor";
+                    background = "#2B2417";
+                    border = "#5B4B24";
+                    dot = "#C89B3C";
+                    foreground = "#E6C56A";
+                    break;
+
+                case LcuBadgeState.Disconnected:
+                    text = "Bağlantı yok";
+                    background = "#2B1919";
+                    border = "#603333";
+                    dot = "#E05A5A";
+                    foreground = "#F0A4A4";
+                    break;
+
+                default:
+                    text = "Bekleniyor";
+                    background = "#222831";
+                    border = "#3A4654";
+                    dot = "#8B98A8";
+                    foreground = "#C7D0DA";
+                    break;
+            }
+
+            LcuStatusBadgeText.Text =
+                text;
+
+            LcuStatusBadge.Background =
+                (Brush)new BrushConverter()
+                    .ConvertFromString(background)!;
+
+            LcuStatusBadge.BorderBrush =
+                (Brush)new BrushConverter()
+                    .ConvertFromString(border)!;
+
+            LcuStatusDot.Fill =
+                (Brush)new BrushConverter()
+                    .ConvertFromString(dot)!;
+
+            LcuStatusBadgeText.Foreground =
+                (Brush)new BrushConverter()
+                    .ConvertFromString(foreground)!;
+        }
+
         private static string GetDisplayVersion()
         {
             string version =
@@ -401,6 +485,59 @@ int pickDelay =
             SaveSettings();
         }
 
+        private async void CheckUpdatesButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            CheckUpdatesButton.IsEnabled = false;
+
+            string originalText =
+                CheckUpdatesButton.Content?.ToString()
+                ?? "Güncellemeleri kontrol et";
+
+            CheckUpdatesButton.Content =
+                "Kontrol ediliyor...";
+
+            try
+            {
+                await UpdateService.CheckForUpdatesAsync(
+                    showStatusMessages: true
+                );
+            }
+            finally
+            {
+                CheckUpdatesButton.Content =
+                    originalText;
+
+                CheckUpdatesButton.IsEnabled =
+                    true;
+            }
+        }
+
+        private void AboutButton_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            string version =
+                GetDisplayVersion();
+
+            MessageBox.Show(
+                $"RiftAssistant\n\n" +
+                $"Sürüm: {version}\n" +
+                $"Developed by Kazım Karakaya with AI\n\n" +
+                "Özellikler:\n" +
+                "• Auto Accept\n" +
+                "• Auto Ban\n" +
+                "• Auto Hover\n" +
+                "• Auto Pick\n" +
+                "• Otomatik Güncelleme\n\n" +
+                "GitHub: KazimKarakaya/RiftAssistant",
+                "RiftAssistant Hakkında",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information
+            );
+        }
+
         public MainWindow()
         {
             _settingsService = new SettingsService();
@@ -411,6 +548,10 @@ int pickDelay =
             _uiReady = false;
 
             InitializeComponent();
+
+            SetLcuBadge(
+                LcuBadgeState.Waiting
+            );
 
             VersionSignatureText.Text =
                 $"Developed by Kazım Karakaya with AI • {GetDisplayVersion()}";
@@ -555,19 +696,90 @@ int pickDelay =
         {
             WriteDebugLog("=== RiftAssistant açıldı ===");
 
-            await ConnectToLeagueAsync();
+            if (_connectionLoopStarted)
+                return;
+
+            _connectionLoopStarted = true;
+            _connectionLoopCancellation =
+                new CancellationTokenSource();
+
+            Closed += (_, _) =>
+            {
+                _connectionLoopCancellation?.Cancel();
+                _connectionLoopCancellation?.Dispose();
+                _connectionLoopCancellation = null;
+            };
+
+            await MaintainLeagueConnectionAsync(
+                _connectionLoopCancellation.Token
+            );
         }
+
+        private async Task MaintainLeagueConnectionAsync(
+            CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    await ConnectToLeagueAsync();
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    _isConnected = false;
+
+                    SetLcuBadge(
+                        LcuBadgeState.Disconnected
+                    );
+
+                    StatusText.Text =
+                        $"LCU yeniden bağlanma hatası: {ex.Message}";
+
+                    WriteDebugLog(
+                        $"[LCU RECONNECT] HATA | {ex}"
+                    );
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                    break;
+
+                try
+                {
+                    await Task.Delay(
+                        TimeSpan.FromSeconds(2),
+                        cancellationToken
+                    );
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+            }
+        }
+
         private async Task ConnectToLeagueAsync()
         {
             try
             {
-                StatusText.Text = "League Client aranıyor...";
+                StatusText.Text =
+                    "League Client aranıyor...";
 
                 string lockfilePath =
                     @"C:\Riot Games\League of Legends\lockfile";
 
                 var lockfile =
                     _lockfileService.Read(lockfilePath);
+
+                SetLcuBadge(
+                    LcuBadgeState.Connecting
+                );
+
+                StatusText.Text =
+                    "League Client bulundu, bağlanılıyor...";
 
                 _lcuClient.Connect(
                     lockfile.Port,
@@ -577,19 +789,43 @@ int pickDelay =
                 await LoadChampionsAsync();
                 _isConnected = true;
 
+                SetLcuBadge(
+                    LcuBadgeState.Connected
+                );
+
                 StatusText.Text = "LCU Bağlandı ✓";
 
                 await MonitorGameflowAsync();
             }
             catch (FileNotFoundException)
             {
+                _isConnected = false;
+
+                SetLcuBadge(
+                    LcuBadgeState.Waiting
+                );
+
                 StatusText.Text =
-                    "League Client bulunamadı.";
+                    "League Client bekleniyor...";
+
+                WriteDebugLog(
+                    "[LCU RECONNECT] League Client bekleniyor."
+                );
             }
             catch (Exception ex)
             {
+                _isConnected = false;
+
+                SetLcuBadge(
+                    LcuBadgeState.Disconnected
+                );
+
                 StatusText.Text =
                     $"Bağlantı hatası: {ex.Message}";
+
+                WriteDebugLog(
+                    $"[LCU RECONNECT] Bağlantı başarısız | {ex.Message}"
+                );
             }
         }
 
@@ -648,10 +884,25 @@ int pickDelay =
                 {
                     CancelAutoAccept();
 
+                    SetLcuBadge(
+                        LcuBadgeState.Disconnected
+                    );
+
                     StatusText.Text =
-                        $"LCU bağlantısı kesildi: {ex.Message}";
+                        $"LCU bağlantısı kesildi. Yeniden bağlanılacak...";
 
                     _isConnected = false;
+
+                    ResetStableTimer();
+                    ResetAutoHoverState();
+                    ResetAutoPickState();
+                    _autoBanHandledActionId = null;
+                    _readyCheckHandled = false;
+
+                    WriteDebugLog(
+                        $"[LCU RECONNECT] Bağlantı koptu | {ex.Message}"
+                    );
+
                     break;
                 }
 

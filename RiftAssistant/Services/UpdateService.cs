@@ -14,10 +14,22 @@ namespace RiftAssistant.Services
 
         private static bool _isChecking;
 
-        public static async Task CheckForUpdatesAsync()
+        public static async Task CheckForUpdatesAsync(bool showStatusMessages = false)
         {
             if (_isChecking)
+            {
+                if (showStatusMessages)
+                {
+                    MessageBox.Show(
+                        "Güncelleme kontrolü zaten devam ediyor.",
+                        "RiftAssistant Güncelleme",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information
+                    );
+                }
+
                 return;
+            }
 
             _isChecking = true;
 
@@ -40,6 +52,17 @@ namespace RiftAssistant.Services
                     WriteUpdateLog(
                         "[AUTO UPDATE] Atlandı | Uygulama Velopack ile kurulu değil."
                     );
+
+                    if (showStatusMessages)
+                    {
+                        MessageBox.Show(
+                            "Güncelleme kontrolü yalnızca RiftAssistant Setup ile kurulmuş sürümde kullanılabilir.\n\n" +
+                            "Visual Studio üzerinden çalıştırıyorsan bu normaldir.",
+                            "RiftAssistant Güncelleme",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
+                    }
 
                     return;
                 }
@@ -86,6 +109,20 @@ namespace RiftAssistant.Services
                     WriteUpdateLog(
                         "[AUTO UPDATE] Yeni sürüm yok."
                     );
+
+                    if (showStatusMessages)
+                    {
+                        string currentVersion =
+                            manager.CurrentVersion?.ToFullString()
+                            ?? "bilinmiyor";
+
+                        MessageBox.Show(
+                            $"RiftAssistant güncel.\n\nKurulu sürüm: v{currentVersion}",
+                            "RiftAssistant Güncelleme",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
+                    }
 
                     return;
                 }
@@ -153,6 +190,16 @@ namespace RiftAssistant.Services
                 WriteUpdateLog(
                     $"[AUTO UPDATE] HATA | {ex}"
                 );
+
+                if (showStatusMessages)
+                {
+                    MessageBox.Show(
+                        $"Güncelleme kontrolü başarısız oldu.\n\n{ex.Message}",
+                        "RiftAssistant Güncelleme",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                }
             }
             finally
             {
