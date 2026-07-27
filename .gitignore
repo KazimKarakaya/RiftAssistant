@@ -19,3 +19,15 @@ Release/
 # Yerel loglar
 debug.log
 debug.old.log
+
+# Build / publish
+**/bin/
+**/obj/
+**/publish/
+
+# Velopack release outputs
+**/Releases/
+*.nupkg
+*-Setup.exe
+*-Portable.zip
+*.zip

@@ -760,16 +760,6 @@
                     <TextBlock Text="UYGULAMA"
                                Style="{StaticResource SectionTitleStyle}"/>
 
-                    <TextBlock Text="Pencere ve tanılama seçenekleri"
-                               Foreground="{StaticResource TextBrush}"
-                               FontSize="15"
-                               FontWeight="SemiBold"
-                               Margin="0,3,0,0"/>
-
-                    <TextBlock Text="Debug kayıtları otomatik tutulur ve boyutu sınırlandırılır."
-                               Style="{StaticResource HintStyle}"
-                               Margin="0,3,0,0"/>
-
                     <TextBlock x:Name="VersionSignatureText"
                                Text="Developed by Kazım Karakaya with AI • v0.9.0-beta.1"
                                Foreground="#667382"
